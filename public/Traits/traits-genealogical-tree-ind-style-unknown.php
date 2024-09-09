@@ -23,11 +23,18 @@ trait Genealogical_Tree_Ind_Style_Unknown {
 	 * @since    2.2.0
 	 */
 	public function ind_style_unknown( $setting, $sex = '' ) {
+		$sex_alt = '';
+		if ( 'M' === $sex ) {
+			$sex_alt = 'F';
+		}
+		if ( 'F' === $sex ) {
+			$sex_alt = 'M';
+		}
 		?>
-		<div class="ind <?php echo esc_attr( $setting->box->layout ); ?> <?php echo esc_attr( $sex ); ?>">
+		<div class="ind <?php echo esc_attr( $setting->box->layout ); ?> <?php echo esc_attr( $sex_alt ); ?>">
 			<div class="ind-cont">
 				<?php if ( isset( $setting->thumb->show ) && 'on' === $setting->thumb->show ) { ?>
-					<?php $image_url = GENEALOGICAL_TREE_DIR_URL . 'public/img/ava-' . $sex . '.jpg'; ?>
+					<?php $image_url = GENEALOGICAL_TREE_DIR_URL . 'public/img/ava-' . $sex_alt . '.jpg'; ?>
 					<div class="image">
 						<div class="image-cont">
 							<img src="<?php echo esc_attr( $image_url ); ?>">

@@ -31,8 +31,7 @@ trait Genealogical_Tree_Ind_Style
         $fams_or_chills = array(),
         $type = 'root',
         $sign = '-'
-    )
-    {
+    ) {
         /**
          * Check premium?.
          *
@@ -45,20 +44,18 @@ trait Genealogical_Tree_Ind_Style
          * @since 1.0.0
          */
         $through_import = get_post_meta( $ind, 'through_import', true );
-        
         if ( $through_import && !$premium ) {
             ?>
 			<div class="ind">
 				<div class="ind-cont">
 					<div class="info"><?php 
-            echo  esc_html__( 'Your license is not active.', 'genealogical-tree' ) ;
+            echo esc_html__( 'Your license is not active.', 'genealogical-tree' );
             ?></div>
 				</div>
 			</div>
 			<?php 
             return;
         }
-        
         /**
          * Get events.
          *
@@ -83,26 +80,23 @@ trait Genealogical_Tree_Ind_Style
          * @since 1.0.0
          */
         $birt = null;
-        if ( isset( $event['BIRT'] ) && $event['BIRT'] ) {
-            
-            if ( null !== current( $event['BIRT'] ) && current( $event['BIRT'] ) ) {
+        if ( isset( $event['BIRT'] ) && $event['BIRT'] && is_array( $event['BIRT'] ) ) {
+            if ( null !== current( $event['BIRT'] ) && current( $event['BIRT'] ) && is_array( current( $event['BIRT'] ) ) ) {
                 $birt = current( $event['BIRT'] )['date'];
-                if ( 'full' === $setting->birt ) {
+                if ( 'full' === $setting->birt && $birt ) {
                     $birt = $birt;
                 }
-                
-                if ( 'year' === $setting->birt ) {
+                if ( 'year' === $setting->birt && $birt ) {
+                    $birt = str_replace( '/', '-', $birt );
                     $birt = strtotime( $birt );
                     $birt = date( 'Y-d-m', $birt );
                     $birt = explode( '-', $birt );
                     $birt = $birt[0];
                 }
-                
                 if ( 'none' === $setting->birt ) {
                     $birt = null;
                 }
             }
-        
         }
         /**
          * Check if have death date data.
@@ -110,26 +104,23 @@ trait Genealogical_Tree_Ind_Style
          * @since 1.0.0
          */
         $deat = null;
-        if ( isset( $event['DEAT'] ) && $event['DEAT'] ) {
-            
-            if ( null !== current( $event['DEAT'] ) && current( $event['DEAT'] ) ) {
+        if ( isset( $event['DEAT'] ) && $event['DEAT'] && is_array( $event['DEAT'] ) ) {
+            if ( null !== current( $event['DEAT'] ) && current( $event['DEAT'] ) && is_array( current( $event['DEAT'] ) ) ) {
                 $deat = current( $event['DEAT'] )['date'];
-                if ( 'full' === $setting->deat ) {
+                if ( 'full' === $setting->deat && $deat ) {
                     $deat = $deat;
                 }
-                
-                if ( 'year' === $setting->deat ) {
+                if ( 'year' === $setting->deat && $deat ) {
+                    $deat = str_replace( '/', '-', $deat );
                     $deat = strtotime( $deat );
                     $deat = date( 'Y-d-m', $deat );
                     $deat = explode( '-', $deat );
                     $deat = $deat[0];
                 }
-                
                 if ( 'none' === $setting->deat ) {
                     $deat = null;
                 }
             }
-        
         }
         /**
          * Is alive?
@@ -158,7 +149,7 @@ trait Genealogical_Tree_Ind_Style
         if ( isset( $setting->name ) && 'title' === $setting->name ) {
             $name = get_the_title( $ind );
         }
-        $name = trim( str_replace( array( '/', '\\', '  ' ), array( ' ', '', ' ' ), $name ) );
+        $name = trim( str_replace( array('/', '\\', '  '), array(' ', '', ' '), $name ) );
         /**
          * Chick highlight.
          *
@@ -168,23 +159,21 @@ trait Genealogical_Tree_Ind_Style
         if ( isset( $setting->root ) && $setting->root === $ind && 'on' === $setting->root_highlight ) {
             $highlight = 'H';
         }
-        
         if ( '3' !== $setting->style && '3-alt' !== $setting->style || 'alter' === $type ) {
             ?>
 			<div data-pid="<?php 
-            echo  esc_attr( $ind ) ;
+            echo esc_attr( $ind );
             ?>" class="ind <?php 
-            echo  esc_attr( $gender ) ;
+            echo esc_attr( $gender );
             ?> <?php 
-            echo  esc_attr( $setting->box->layout ) ;
+            echo esc_attr( $setting->box->layout );
             ?> <?php 
-            echo  esc_attr( get_post_status( $ind ) ) ;
+            echo esc_attr( get_post_status( $ind ) );
             ?> <?php 
-            echo  esc_attr( $highlight ) ;
+            echo esc_attr( $highlight );
             ?>">
 			<?php 
         }
-        
         /**
          * Is collapsible?
          *
@@ -196,8 +185,8 @@ trait Genealogical_Tree_Ind_Style
         }
         ?>
 		<div class="ind-cont <?php 
-        echo  esc_attr( $collapsible ) ;
-        ?>" >
+        echo esc_attr( $collapsible );
+        ?>">
 		<?php 
         /**
          * Show image?
@@ -207,10 +196,8 @@ trait Genealogical_Tree_Ind_Style
         if ( isset( $setting->image ) && 'true' === $setting->image ) {
             $setting->thumb->show = 'on';
         }
-        
         if ( isset( $setting->thumb->show ) && 'on' === $setting->thumb->show ) {
             $image_url = GENEALOGICAL_TREE_DIR_URL . 'public/img/ava-' . $gender . '.jpg';
-            
             if ( defined( 'GENEALOGICAL_DEV' ) && \GENEALOGICAL_TREE_DEBUG ) {
                 if ( 'F' === $gender ) {
                     $image_url = 'https://randomuser.me/api/portraits/med/women/' . wp_rand( 1, 99 ) . '.jpg';
@@ -219,72 +206,65 @@ trait Genealogical_Tree_Ind_Style
                     $image_url = 'https://randomuser.me/api/portraits/med/men/' . wp_rand( 1, 99 ) . '.jpg';
                 }
             }
-            
             ?>
 			<div class="image">
 				<div class="image-cont">
 					<img src="<?php 
-            echo  esc_attr( $image_url ) ;
+            echo esc_attr( $image_url );
             ?>">
 				</div>
 			</div>
 			<?php 
         }
-        
         ?>
 		<div class="info" data-member-id="<?php 
         esc_attr( $ind );
         ?>">
 		<?php 
         if ( $gen ) {
-            
             if ( isset( $setting->generation ) && 'on' === $setting->generation ) {
                 ?>
 				<div class="gt-generation"><?php 
-                echo  esc_html__( 'GEN:', 'genealogical-tree' ) ;
+                echo esc_html__( 'GEN:', 'genealogical-tree' );
                 ?> <?php 
-                echo  esc_html( $gen ) ;
+                echo esc_html( $gen );
                 ?></div>
 				<?php 
             }
-        
         }
         if ( $ind ) {
-            
             if ( isset( $setting->treelink ) && 'on' === $setting->treelink ) {
                 ?>
 				<div class="tree-link">
 					<a data-popid="<?php 
-                echo  esc_attr( $ind ) ;
+                echo esc_attr( $ind );
                 ?>" href="?root=<?php 
-                echo  esc_attr( $ind ) ;
+                echo esc_attr( $ind );
                 ?>">
 						<img style="width:20px;display:block;" src="<?php 
-                echo  esc_attr( GENEALOGICAL_TREE_DIR_URL ) ;
+                echo esc_attr( GENEALOGICAL_TREE_DIR_URL );
                 ?>public/img/family-tree.svg">
 					</a>
 				</div>
 				<?php 
             }
-        
         }
         ?>
 			<div class="name">
 				<a data-popid="<?php 
-        echo  esc_attr( $ind ) ;
+        echo esc_attr( $ind );
         ?>" href="<?php 
-        echo  esc_attr( get_the_permalink( $ind ) ) ;
+        echo esc_attr( get_the_permalink( $ind ) );
         ?>">
 					<?php 
-        echo  esc_html( $name ) ;
+        echo esc_html( $name );
         ?>
 				</a>
 		<?php 
-        
         if ( isset( $setting->gender ) && 'none' !== $setting->gender ) {
             ?>
 			<span class="gender <?php 
-            echo  esc_attr( $gender ) ;
+            echo esc_attr( $gender );
             ?>">
 
 			<?php 
@@ -295,60 +275,46 @@ trait Genealogical_Tree_Ind_Style
             }
             ?>
 			<?php 
-            
             if ( 'short' === $setting->gender ) {
-                
                 if ( 'M' === $gender ) {
                     ?>
 					(<?php 
-                    echo  esc_html__( 'M', 'genealogical-tree' ) ;
+                    echo esc_html__( 'M', 'genealogical-tree' );
                     ?>)
 					<?php 
                 }
-                
-                
                 if ( 'F' === $gender ) {
                     ?>
 					(<?php 
-                    echo  esc_html__( 'F', 'genealogical-tree' ) ;
+                    echo esc_html__( 'F', 'genealogical-tree' );
                     ?>)
 					<?php 
                 }
-            
             }
-            
-            
             if ( 'full' === $setting->gender ) {
-                
                 if ( 'M' === $gender ) {
                     ?>
 					(<?php 
-                    echo  esc_html__( 'Male', 'genealogical-tree' ) ;
+                    echo esc_html__( 'Male', 'genealogical-tree' );
                     ?>)
 					<?php 
                 }
-                
-                
                 if ( 'F' === $gender ) {
                     ?>
 					(<?php 
-                    echo  esc_html__( 'Female', 'genealogical-tree' ) ;
+                    echo esc_html__( 'Female', 'genealogical-tree' );
                     ?>)
 					<?php 
                 }
-            
             }
-            
             ?>
 			</span>
 			<?php 
         }
-        
         ?>
 		</div>
 
 			<?php 
-        
         if ( ('none' !== $setting->birt || 'none' !== $setting->deat) && ($birt || $deat) ) {
             ?>
 			<div class="birt-deat">
@@ -362,29 +328,25 @@ trait Genealogical_Tree_Ind_Style
 
 				<?php 
             if ( 'none' !== $setting->birt && $birt ) {
-                
                 if ( isset( $setting->birt_hide_alive ) && 'on' === $setting->birt_hide_alive ) {
-                    
                     if ( !$isalive ) {
                         ?>
 							<?php 
-                        echo  esc_html__( 'B', 'genealogical-tree' ) ;
+                        echo esc_html__( 'B', 'genealogical-tree' );
                         ?> : <?php 
-                        echo  esc_html( $birt ) ;
+                        echo esc_html( $birt );
                         ?>
 							<?php 
                     }
-                
                 } else {
                     ?>
 						<?php 
-                    echo  esc_html__( 'B', 'genealogical-tree' ) ;
+                    echo esc_html__( 'B', 'genealogical-tree' );
                     ?> : <?php 
-                    echo  esc_html( $birt ) ;
+                    echo esc_html( $birt );
                     ?>
 						<?php 
                 }
-            
             }
             ?>
 
@@ -397,17 +359,15 @@ trait Genealogical_Tree_Ind_Style
             ?>
 
 				<?php 
-            
             if ( 'none' !== $setting->deat && $deat ) {
                 ?>
 					<?php 
-                echo  esc_html__( 'D', 'genealogical-tree' ) ;
+                echo esc_html__( 'D', 'genealogical-tree' );
                 ?> : <?php 
-                echo  esc_html( $deat ) ;
+                echo esc_html( $deat );
                 ?>
 				<?php 
             }
-            
             ?>
 
 				<?php 
@@ -420,13 +380,10 @@ trait Genealogical_Tree_Ind_Style
 			</div>
 			<?php 
         }
-        
         ?>
 		</div>
 		<?php 
-        
         if ( ($setting->collapsible_family_root && 'root' === $type || $setting->collapsible_family_spouse && 'spouse' === $type) && count( $fams_or_chills ) > 0 ) {
-            
             if ( '+' === $sign ) {
                 $gt_collapsed = 'gt-collapsed';
             } elseif ( '-' === $sign ) {
@@ -434,16 +391,14 @@ trait Genealogical_Tree_Ind_Style
             } else {
                 $gt_collapsed = '';
             }
-            
             ?>
 			<div class="gt-collapse-family <?php 
-            echo  esc_html( $gt_collapsed ) ;
+            echo esc_html( $gt_collapsed );
             ?>"> <?php 
-            echo  esc_html( $sign ) ;
+            echo esc_html( $sign );
             ?></div>
 			<?php 
         }
-        
         ?>
 				</div>
 		<?php 

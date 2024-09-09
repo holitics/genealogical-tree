@@ -28,8 +28,7 @@ namespace Zqe;
  * @subpackage Genealogical_Tree/includes
  * @author     ak devs <akdevs.fr@gmail.com>
  */
-class Genealogical_Tree
-{
+class Genealogical_Tree {
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -38,7 +37,8 @@ class Genealogical_Tree
      * @access  protected
      * @var   Genealogical_Tree_Loader  $loader  Maintains and registers all hooks for the plugin.
      */
-    protected  $loader ;
+    protected $loader;
+
     /**
      * The loader that's responsible for maintaining and registering all hooks that power
      * the plugin.
@@ -47,7 +47,28 @@ class Genealogical_Tree
      * @access  protected
      * @var     Genealogical_Tree_Helper  $helper  Maintains and registers all hooks for the plugin.
      */
-    public  $helper ;
+    public $helper;
+
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since   1.0.0
+     * @access  protected
+     * @var     Genealogical_Tree_Admin  $helper  Maintains and registers all hooks for the plugin.
+     */
+    public $admin;
+
+    /**
+     * The loader that's responsible for maintaining and registering all hooks that power
+     * the plugin.
+     *
+     * @since   1.0.0
+     * @access  protected
+     * @var     Genealogical_Tree_Public  $helper  Maintains and registers all hooks for the plugin.
+     */
+    public $public;
+
     /**
      * The unique identifier of this plugin.
      *
@@ -55,7 +76,8 @@ class Genealogical_Tree
      * @access  protected
      * @var     string  $name  The string used to uniquely identify this plugin.
      */
-    public  $name ;
+    public $name;
+
     /**
      * The current version of the plugin.
      *
@@ -63,7 +85,8 @@ class Genealogical_Tree
      * @access  protected
      * @var     string  $version  The current version of the plugin.
      */
-    public  $version ;
+    public $version;
+
     /**
      * Define the core functionality of the plugin.
      *
@@ -73,15 +96,12 @@ class Genealogical_Tree
      *
      * @since  1.0.0
      */
-    public function __construct()
-    {
-        
+    public function __construct() {
         if ( defined( 'GENEALOGICAL_TREE_VERSION' ) ) {
             $this->version = GENEALOGICAL_TREE_VERSION;
         } else {
             $this->version = '1.0.0';
         }
-        
         $this->name = 'genealogical-tree';
         $this->load_dependencies();
         $this->set_locale();
@@ -89,7 +109,7 @@ class Genealogical_Tree
         $this->define_public_hooks();
         $this->define_api_hooks();
     }
-    
+
     /**
      * Load the required dependencies for this plugin.
      *
@@ -99,12 +119,13 @@ class Genealogical_Tree
      * @since  1.0.0
      * @access  private
      */
-    private function load_dependencies()
-    {
+    private function load_dependencies() {
         $this->loader = new \Zqe\Genealogical_Tree_Loader();
         $this->helper = new \Zqe\Genealogical_Tree_Helper();
+        $this->admin = new \Zqe\Genealogical_Tree_Admin($this);
+        $this->public = new \Zqe\Genealogical_Tree_Public($this);
     }
-    
+
     /**
      * Define the locale for this plugin for internationalization.
      *
@@ -114,12 +135,11 @@ class Genealogical_Tree
      * @since  1.0.0
      * @access  private
      */
-    private function set_locale()
-    {
+    private function set_locale() {
         $plugin_i18n = new \Zqe\Genealogical_Tree_i18n();
         $this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
     }
-    
+
     /**
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
@@ -127,13 +147,18 @@ class Genealogical_Tree
      * @since  1.0.0
      * @access  private
      */
-    private function define_admin_hooks()
-    {
-        $plugin_admin = new \Zqe\Genealogical_Tree_Admin( $this );
+    private function define_admin_hooks() {
+        $plugin_admin = new \Zqe\Genealogical_Tree_Admin($this);
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
         $this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
         $this->loader->add_action( 'init', $plugin_admin, 'init_post_type_and_taxonomy' );
         $this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
+        $this->loader->add_action( 'wp_ajax_search_members', $plugin_admin, 'search_members_ajax' );
+        $this->loader->add_action( 'wp_ajax_nopriv_search_members', $plugin_admin, 'search_members_ajax' );
+        $this->loader->add_action( 'wp_ajax_delete_posts_by_ids', $plugin_admin, 'delete_posts_by_ids_ajax' );
+        $this->loader->add_action( 'wp_ajax_get_posts_by_term_or_no_term', $plugin_admin, 'get_posts_by_term_or_no_term_ajax' );
+        $this->loader->add_action( 'wp_ajax_nopriv_get_posts_by_term_or_no_term', $plugin_admin, 'get_posts_by_term_or_no_term_ajax' );
+        // If needed for non-logged in users
         // Meta Box.
         $this->loader->add_action(
             'add_meta_boxes',
@@ -210,14 +235,31 @@ class Genealogical_Tree
         $this->loader->add_action( 'bp_template_content', $plugin_admin, 'bp_family_tree_content' );
         $this->loader->add_action( 'admin_post_process_export_post', $plugin_admin, 'process_export_post' );
         $this->loader->add_action( 'admin_post_process_import_post', $plugin_admin, 'process_import_post' );
+        // Columns and Quick Edit Fields.
+        $this->loader->add_filter( 'manage_gt-tree_posts_columns', $plugin_admin, 'tree_family_and_root_columns' );
+        $this->loader->add_action(
+            'manage_posts_custom_column',
+            $plugin_admin,
+            'tree_populate_family_and_root_columns',
+            10,
+            2
+        );
+        $this->loader->add_action(
+            'quick_edit_custom_box',
+            $plugin_admin,
+            'tree_quick_edit_fields',
+            10,
+            2
+        );
+        $this->loader->add_action( 'save_post', $plugin_admin, 'tree_quick_edit_save' );
         $plugin_upgrade = new \Zqe\Genealogical_Tree_Upgrade();
         // ver_upgrade.
         $this->loader->add_action( 'wp_ajax_fix_ver_upgrade_ajax', $plugin_upgrade, 'ver_upgrade' );
         $this->loader->add_action( 'wp_ajax_nopriv_fix_ver_upgrade_ajax', $plugin_upgrade, 'ver_upgrade' );
-        if ( !get_site_option( '_gt_version_fixed_through_notice' ) ) {
+        if ( !get_site_option( '_gt_version_fixed_through_notice' ) && version_compare( $this->get_version(), '2.1.9', '<=' ) ) {
             $this->loader->add_action( 'admin_notices', $plugin_upgrade, 'admin_notice__info' );
         }
-        $plugin_admin_family = new \Zqe\Inc\Genealogical_Tree_Admin_Family_Group( $this );
+        $plugin_admin_family = new \Zqe\Inc\Genealogical_Tree_Admin_Family_Group($this);
         $this->loader->add_filter(
             'parent_file',
             $plugin_admin_family,
@@ -245,7 +287,7 @@ class Genealogical_Tree
             2
         );
     }
-    
+
     /**
      * Register all of the hooks related to the admin area functionality
      * of the plugin.
@@ -253,10 +295,9 @@ class Genealogical_Tree
      * @since  1.0.0
      * @access  private
      */
-    private function define_api_hooks()
-    {
+    private function define_api_hooks() {
     }
-    
+
     /**
      * Register all of the hooks related to the public-facing functionality
      * of the plugin.
@@ -264,34 +305,45 @@ class Genealogical_Tree
      * @since  1.0.0
      * @access  private
      */
-    private function define_public_hooks()
-    {
-        $plugin_public = new \Zqe\Genealogical_Tree_Public( $this );
+    private function define_public_hooks() {
+        $plugin_public = new \Zqe\Genealogical_Tree_Public($this);
         $this->loader->add_action( 'init', $plugin_public, 'process_registration_post' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
         $this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-        $this->loader->add_filter( 'the_content', $plugin_public, 'data_in_single_page' );
+        $this->loader->add_filter(
+            'the_content',
+            $plugin_public,
+            'the_content_filter',
+            10,
+            1
+        );
+        $this->loader->add_filter(
+            'get_the_excerpt',
+            $plugin_public,
+            'get_the_excerpt_filter',
+            10,
+            2
+        );
         $this->loader->add_action( 'pre_get_posts', $plugin_public, 'pre_get_posts' );
         $this->loader->add_action( 'login_form_middle', $plugin_public, 'add_lost_password_link' );
-        add_shortcode( 'tree', array( $plugin_public, 'tree_shortcode' ) );
-        add_shortcode( 'gt-tree', array( $plugin_public, 'gt_tree_shortcode' ) );
-        add_shortcode( 'gt-tree-list', array( $plugin_public, 'gt_tree_list_shortcode' ) );
-        add_shortcode( 'gt-member', array( $plugin_public, 'gt_member_shortcode' ) );
-        add_shortcode( 'gt-members', array( $plugin_public, 'gt_members_shortcode' ) );
-        add_shortcode( 'gt-user-registration', array( $plugin_public, 'gt_user_registration_shortcode' ) );
-        add_shortcode( 'gt-user-login', array( $plugin_public, 'gt_user_login_shortcode' ) );
+        add_shortcode( 'tree', array($plugin_public, 'tree_shortcode') );
+        add_shortcode( 'gt-tree', array($plugin_public, 'gt_tree_shortcode') );
+        add_shortcode( 'gt-tree-list', array($plugin_public, 'gt_tree_list_shortcode') );
+        add_shortcode( 'gt-member', array($plugin_public, 'gt_member_shortcode') );
+        add_shortcode( 'gt-members', array($plugin_public, 'gt_members_shortcode') );
+        add_shortcode( 'gt-user-registration', array($plugin_public, 'gt_user_registration_shortcode') );
+        add_shortcode( 'gt-user-login', array($plugin_public, 'gt_user_login_shortcode') );
     }
-    
+
     /**
      * Run the loader to execute all of the hooks with WordPress.
      *
      * @since  1.0.0
      */
-    public function run()
-    {
+    public function run() {
         $this->loader->run();
     }
-    
+
     /**
      * The name of the plugin used to uniquely identify it within the context of
      * WordPress and to define internationalization functionality.
@@ -299,41 +351,37 @@ class Genealogical_Tree
      * @since   1.0.0
      * @return  string  The name of the plugin.
      */
-    public function get_name()
-    {
+    public function get_name() {
         return $this->name;
     }
-    
+
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
      * @since   1.0.0
      * @return  Genealogical_Tree_Loader  Orchestrates the hooks of the plugin.
      */
-    public function get_loader()
-    {
+    public function get_loader() {
         return $this->loader;
     }
-    
+
     /**
      * The reference to the class that orchestrates the hooks with the plugin.
      *
      * @since   1.0.0
      * @return  Genealogical_Tree_Helper  Orchestrates the hooks of the plugin.
      */
-    public function get_helper()
-    {
+    public function get_helper() {
         return $this->helper;
     }
-    
+
     /**
      * Retrieve the version number of the plugin.
      *
      * @since   1.0.0
      * @return  string  The version number of the plugin.
      */
-    public function get_version()
-    {
+    public function get_version() {
         return $this->version;
     }
 

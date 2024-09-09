@@ -14,13 +14,13 @@ namespace Zqe\Traits;
 trait Genealogical_Tree_Style_2
 {
     /**
-     * Function for `tree_style2__childs`.
+     * It's a recursive function that prints out a tree of categories.
      *
-     * @param  mixed $chills chills.
-     * @param  mixed $setting setting.
-     * @param  mixed $gen gen.
-     * @param  mixed $checker checker.
-     * @param  mixed $collapsible collapsible.
+     * @param  array      $chills The childs of the current category.
+     * @param  object     $setting The setting array.
+     * @param  int|string $gen The generation of the current category.
+     * @param  array      $checker This is an array that contains all the categories that have been displayed.
+     * @param  string     $collapsible_style This is the CSS that will be applied to the childs ul.
      *
      * @return void
      *
@@ -31,18 +31,16 @@ trait Genealogical_Tree_Style_2
         $setting,
         $gen = 0,
         $checker = array(),
-        $collapsible = null
-    )
-    {
+        $collapsible_style = ''
+    ) {
         ?>
 		<ul class="childs" style="<?php 
-        echo  esc_attr( $collapsible ) ;
+        echo esc_attr( $collapsible_style );
         ?>">
 			<?php 
         foreach ( $chills as $key => $chill ) {
             ?>
 				<?php 
-            
             if ( !in_array( $chill, $checker, true ) ) {
                 ?>
 					<?php 
@@ -58,7 +56,6 @@ trait Genealogical_Tree_Style_2
                 ?>
 				<?php 
             }
-            
             ?>
 			<?php 
         }

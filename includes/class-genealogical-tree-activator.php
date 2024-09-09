@@ -32,7 +32,7 @@ class Genealogical_Tree_Activator {
 	 */
 	public static function activate() {
 
-		$plugin_admin = new \Zqe\Genealogical_Tree_Admin( '', '' );
+		$plugin_admin = new \Zqe\Genealogical_Tree_Admin( '' );
 		$plugin_admin->init_post_type_and_taxonomy();
 
 		flush_rewrite_rules();

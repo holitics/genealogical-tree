@@ -46,7 +46,7 @@ div.gt-container .gt-zoom-contorl:after {
 div.gt-container .gt-zoom-contorl button {
     padding: 4px 8px;
     min-width: 32px;
-    height: 32px;
+    min-height: 32px;
     display: block;
     float: right;
     margin-left: 2px;
@@ -241,10 +241,13 @@ div.gt-tree.gt-tree-hr ul {
     text-align: left;
     display: inline-block;
     vertical-align: middle;
+    margin: 0 !important;
+
 }
 div.gt-tree.gt-tree-hr li {
-    display: block;
+    display: flex;
     vertical-align: middle;
+    align-items: center;
 }
 div.gt-tree.gt-tree-hr li:only-child {
     padding-left: 0px !important;
@@ -256,6 +259,7 @@ div.gt-tree.gt-tree-hr div.ind {
 }
 div.gt-tree ul.parents > li > div.ind {
     display: block;
+    min-height: 35px;
 }
 div.gt-tree div.partners > div.partner > div.ind {
     display: block;
@@ -493,21 +497,21 @@ ul.has-ancestor > .alter-tree  li.parent {
   margin: 10px 0;
   border: 1px solid #dcd7ca;
   border-radius: 8px;
+  margin-left: 6rem;
 }
 .gt-tree-timeline__event__title {
-  font-size: 1.2rem;
+  font-size: 16px;
   line-height: 1.4;
-  text-transform: uppercase;
   font-weight: 600;
   color: #9251ac;
   letter-spacing: 1.5px;
-      padding-left: 30px;
+  padding-left: 6px;
 }
 .gt-tree-timeline__event__content {
   padding: 10px;
 }
 .gt-tree-timeline__event__date {
-  font-size: 1.5rem;
+  font-size: 16px;
   font-weight: 600;
   width: 100px;
   text-align: center;
@@ -567,3 +571,40 @@ ul.has-ancestor > .alter-tree  li.parent {
     border-radius: 4px 4px 0 0;
   }
 }
+
+  
+  .gt-member-gallery-images {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-flow: dense;
+    gap: 10px;
+  }
+  
+  .gt-member-gallery-images img {
+    max-width: 100%;
+    display: block;
+  }
+  
+  .gt-member-gallery-images figure {
+    margin: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    padding: 5px;
+    background: #eee;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+  }
+  
+  .gt-member-gallery-images figure > img {
+    border-radius: 2px;
+  }
+  
+  .gt-member-gallery-images figure a {
+    color: black;
+    text-decoration: none;
+  }
+  
+  .gt-member-gallery-images figcaption {
+    padding: 0.2em 0.5em;
+    text-align: center;
+  }

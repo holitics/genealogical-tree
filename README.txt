@@ -2,8 +2,8 @@
 Contributors: akdevs, freemius
 Tags: Family Tree, Genealogy, Ancestry, Family History, GED, Pedigree
 Requires at least: 4.4
-Tested up to: 6.1
-Stable tag: 2.2.0.1
+Tested up to: 6.6
+Stable tag: 2.2.4
 License: GPLv2
 
 Genealogical Tree is a ultimate solution for creating and displaying family trees, family history, builds ancestor profiles on WordPress.
@@ -54,11 +54,11 @@ This may have bugs and lack of many features. If you want to contribute on this 
 == Documentation ==
 
 Getting Started with Genealogical Tree is only a matter of moments.
-Check out the detailed [documentation](https://www.devs.family/genealogical-tree/docs/documentations/) created by us to help you out to run Genealogical Tree in the best way.
+Check out the detailed [documentation](https://zqe.io/docs/genealogical-tree-documentation/) created by us to help you out to run Genealogical Tree in the best way.
 
 == LINKS ==
-[Demo](https://devs.family/genealogical-tree/demo)
-[Documentation](https://www.devs.family/genealogical-tree/docs/documentations/)
+[Demo](https://demo.zqe.io/genealogical-tree/)
+[Documentation](https://zqe.io/docs/genealogical-tree-documentation/)
 [Pro Version](https://checkout.freemius.com/mode/dialog/plugin/3592/plan/5774/)
 
 == Translations ==
@@ -96,12 +96,29 @@ Search for “Genealogical Tree” under “Plugins” → “Add New” in your
 15. Import GED Success (Pro)
 
 == Changelog ==
+= 2.2.3 - 18 March 2024 =
+ * Bug fix - SDK update, Addon support 
+
+= 2.2.0.5 - 18 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix - fix ajax fmaliy and spouse issue
+
+= 2.2.0.4 - 9 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix - Get default tree setings on tree setting pages
+
+= 2.2.0.3 - 6 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix
+ * Updating freemius version to 2.5.3.
+
+= 2.2.0.2 - 4 December 2022 =
+ * Bug fix - family tree broken since update
+
 = 2.2.0.1 - 29 November 2022 =
- * This update may break your genealogy data. Please keep backup you data before update.
  * Bug fix
 
 = 2.2.0 - 29 November 2022 =
- * This update may break your genealogy data. Please keep backup you data before update.
  * Bug fix
  * Core rewrite
 
@@ -183,6 +200,26 @@ Search for “Genealogical Tree” under “Plugins” → “Add New” in your
  * First Release
 
 == Upgrade Notice ==
+= 2.2.3 - 18 March 2024 =
+ * Bug fix - SDK update, Addon support 
+
+= 2.2.0.5 - 18 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix - fix ajax fmaliy and spouse issue
+ 
+= 2.2.0.4 - 9 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix - Get default tree setings on tree setting pages
+ 
+= 2.2.0.3 - 6 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix
+ * Updating freemius version to 2.5.3.
+
+= 2.2.0.2 - 4 December 2022 =
+ * This update may break your genealogy data if you are upgrading from version before 2.1.9. Please keep backup you data before update.
+ * Bug fix - family tree broken since update
+
 = 2.2.0.1 - 29 November 2022 =
  * This update may break your genealogy data. Please keep backup you data before update.
  * Bug fix

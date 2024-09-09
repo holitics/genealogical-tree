@@ -32,14 +32,14 @@ trait Genealogical_Tree_Style_Alter {
 			$gen--;
 		}
 
-		if ( $gen > 2 ) {
+		if ( (int) abs( $gen ) > 2 ) {
 			if ( gt_fs()->is_not_paying() && ! gt_fs()->is_trial() ) {
 				return;
 			}
 		}
 
-		if ( '-1' !== (string) $setting->generation_number_ancestor ) {
-			if ( $gen > $setting->generation_number_ancestor ) {
+		if ( '-1' !== (string) $setting->generation_number_ancestor && 0 !== (int) $setting->generation_number_ancestor ) {
+			if ( (int) abs( $gen ) > (int) $setting->generation_number_ancestor ) {
 				return;
 			}
 		}

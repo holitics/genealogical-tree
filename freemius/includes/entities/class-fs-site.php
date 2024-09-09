@@ -13,6 +13,7 @@
     /**
      * @property int $blog_id
      */
+    #[AllowDynamicProperties]
     class FS_Site extends FS_Scope_Entity {
         /**
          * @var number
@@ -187,7 +188,10 @@
                 // Cloudways
                 fs_ends_with( $subdomain, '.cloudwaysapps.com' ) ||
                 // Kinsta
-                ( fs_starts_with( $subdomain, 'staging-' ) && ( fs_ends_with( $subdomain, '.kinsta.com' ) || fs_ends_with( $subdomain, '.kinsta.cloud' ) ) ) ||
+                (
+                    ( fs_starts_with( $subdomain, 'staging-' ) || fs_starts_with( $subdomain, 'env-' ) ) &&
+                    ( fs_ends_with( $subdomain, '.kinsta.com' ) || fs_ends_with( $subdomain, '.kinsta.cloud' ) )
+                ) ||
                 // DesktopServer
                 fs_ends_with( $subdomain, '.dev.cc' ) ||
                 // Pressable

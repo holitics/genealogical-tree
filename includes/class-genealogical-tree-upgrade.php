@@ -19,7 +19,6 @@ namespace Zqe;
  * @author     ak devs <akdevs.fr@gmail.com>
  */
 class Genealogical_Tree_Upgrade {
-
 	/**
 	 * Short Description. (use period)
 	 *
@@ -28,10 +27,24 @@ class Genealogical_Tree_Upgrade {
 	 * @since    1.0.0
 	 */
 	public function admin_notice__info() {
+		printf(
+			'
+			<div class="notice notice-warning">
+				<p>
+				%1$s
+					<a id="Upgrade-Genealogical-Tree-Database" class="button" href="#">
+						<span class=""></span>
+						%2$s
+					</a>
+					%3$s
+				</p>
+			</div>
+			',
+			esc_html__( 'Genealogical Tree plugin got upgrade database stracture, Please click ', 'genealogical-tree' ),
+			esc_html__( 'Upgrade Genealogical Tree Database', 'genealogical-tree' ),
+			esc_html__( 'this link. Otherwise you may face issues.', 'genealogical-tree' )
+		);
 		?>
-		<div class="notice notice-warning">
-			<p><?php esc_html_e( 'Genealogical Tree plugin got upgrade database stracture, Please click <a id="Upgrade-Genealogical-Tree-Database" class="button" href=""><span class=""></span>Upgrade Genealogical Tree Database</a> this link. Otherwise you may face issues.', 'genealogical-tree' ); ?></p>
-		</div>
 		<?php
 	}
 
@@ -80,7 +93,10 @@ class Genealogical_Tree_Upgrade {
 		foreach ( $members as $key => $value ) {
 			$wife = get_post_meta( $value->ID, 'wife', true );
 			$husb = get_post_meta( $value->ID, 'husb', true );
-			$this->find_or_create_family( $wife, $husb, array( $value->ID ) );
+
+			$chills = array( array( 'id'=> $value->ID, 'pedi' => '' ));
+
+			$this->find_or_create_family( $wife, $husb, $chills);
 		}
 
 		foreach ( $members as $key => $value ) {

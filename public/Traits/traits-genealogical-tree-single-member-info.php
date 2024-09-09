@@ -23,8 +23,7 @@ trait Genealogical_Tree_Single_Member_Info
      *
      * @since    1.0.0
      */
-    public function single_member_info( $post_id, $html = '' )
-    {
+    public function single_member_info( $post_id, $html = '' ) {
         /**
          * Post id.
          *
@@ -73,7 +72,6 @@ trait Genealogical_Tree_Single_Member_Info
         $event = array();
         $event['EVEN'] = array();
         foreach ( $even_array as $key => $value ) {
-            
             if ( 'BIRT' === $value['tag'] ) {
                 $event['BIRT'][$key] = $value;
             } elseif ( 'DEAT' === $value['tag'] ) {
@@ -81,21 +79,20 @@ trait Genealogical_Tree_Single_Member_Info
             } else {
                 $event[$value['tag']][$key] = $value;
             }
-        
         }
-        $birt = ( isset( $event['BIRT'] ) && !empty($event['BIRT']) ? current( $event['BIRT'] ) : array(
+        $birt = ( isset( $event['BIRT'] ) && !empty( $event['BIRT'] ) ? current( $event['BIRT'] ) : array(
             'date' => '',
             'plac' => '',
         ) );
-        $chr = ( isset( $event['CHR'] ) && !empty($event['CHR']) ? current( $event['CHR'] ) : array(
+        $chr = ( isset( $event['CHR'] ) && !empty( $event['CHR'] ) ? current( $event['CHR'] ) : array(
             'date' => '',
             'plac' => '',
         ) );
-        $deat = ( isset( $event['DEAT'] ) && !empty($event['DEAT']) ? current( $event['DEAT'] ) : array(
+        $deat = ( isset( $event['DEAT'] ) && !empty( $event['DEAT'] ) ? current( $event['DEAT'] ) : array(
             'date' => '',
             'plac' => '',
         ) );
-        $buri = ( isset( $event['BURI'] ) && !empty($event['BURI']) ? current( $event['BURI'] ) : array(
+        $buri = ( isset( $event['BURI'] ) && !empty( $event['BURI'] ) ? current( $event['BURI'] ) : array(
             'date' => '',
             'plac' => '',
         ) );
@@ -115,7 +112,7 @@ trait Genealogical_Tree_Single_Member_Info
         $note = ( get_post_meta( $post_id, 'note' ) ? get_post_meta( $post_id, 'note' ) : array() );
         foreach ( $note as $key => $value ) {
             if ( !isset( $value['note'] ) || isset( $value['note'] ) && !$value['note'] ) {
-                unset( $note[$key] );
+                unset($note[$key]);
             }
         }
         /**
@@ -135,39 +132,36 @@ trait Genealogical_Tree_Single_Member_Info
          *
          * @since
          */
-        $slgcs = ( get_post_meta( $post_id, 'slgc' ) ? get_post_meta( $post_id, 'slgc' ) : array( array(
+        $slgcs = ( get_post_meta( $post_id, 'slgc' ) ? get_post_meta( $post_id, 'slgc' ) : array(array(
             'famc' => '',
             'date' => '',
             'plac' => '',
-        ) ) );
+        )) );
         /**
          * To do make it done with array_filter.
          *
          * @since
          */
-        $famc_array = ( get_post_meta( $post_id, 'famc' ) ? get_post_meta( $post_id, 'famc' ) : array( array(
+        $famc_array = ( get_post_meta( $post_id, 'famc' ) ? get_post_meta( $post_id, 'famc' ) : array(array(
             'famc' => '',
-        ) ) );
+        )) );
         $is_duplicate_famc_array = array();
         foreach ( $famc_array as $key => $famc ) {
             if ( !isset( $famc['famc'] ) ) {
-                unset( $famc_array[$key] );
+                unset($famc_array[$key]);
             }
-            
             if ( is_array( $famc ) ) {
                 if ( in_array( $famc['famc'], $is_duplicate_famc_array, true ) ) {
-                    unset( $famc_array[$key] );
+                    unset($famc_array[$key]);
                 }
                 array_push( $is_duplicate_famc_array, $famc['famc'] );
             }
-        
         }
         $parents = array();
         foreach ( $famc_array as $key => $famc ) {
             if ( isset( $famc['famc'] ) && $famc['famc'] && is_array( $famc['famc'] ) ) {
                 $famc['famc'] = $famc['famc']['famc'];
             }
-            
             if ( $famc['famc'] ) {
                 $parents[$key]['family_id'] = $famc['famc'];
                 $parents[$key]['father_id'] = ( get_post_meta( $famc['famc'], 'husb', true ) ? get_post_meta( $famc['famc'], 'husb', true ) : null );
@@ -175,7 +169,7 @@ trait Genealogical_Tree_Single_Member_Info
                 $parents[$key]['chil'] = ( get_post_meta( $famc['famc'], 'chil' ) ? get_post_meta( $famc['famc'], 'chil' ) : array() );
                 $i = array_search( $post_id, $parents[$key]['chil'], true );
                 if ( false !== $i ) {
-                    unset( $parents[$key]['chil'][$i] );
+                    unset($parents[$key]['chil'][$i]);
                 }
                 $parents[$key]['even'] = array();
                 $famc_even_array = ( get_post_meta( $famc['famc'], 'even' ) ? get_post_meta( $famc['famc'], 'even' ) : array() );
@@ -192,12 +186,11 @@ trait Genealogical_Tree_Single_Member_Info
                         $parents[$key]['SLGC'] = $value;
                     }
                 }
-                $parents[$key]['MARR'] = ( isset( $parents[$key]['even']['MARR'] ) && !empty($parents[$key]['even']['MARR']) ? current( $parents[$key]['even']['MARR'] ) : array(
+                $parents[$key]['MARR'] = ( isset( $parents[$key]['even']['MARR'] ) && !empty( $parents[$key]['even']['MARR'] ) ? current( $parents[$key]['even']['MARR'] ) : array(
                     'date' => '',
                     'plac' => '',
                 ) );
             }
-        
         }
         /**
          * To do make it done with array_filter.
@@ -207,7 +200,7 @@ trait Genealogical_Tree_Single_Member_Info
         $fams_array = ( get_post_meta( $post_id, 'fams' ) ? get_post_meta( $post_id, 'fams' ) : array() );
         foreach ( $fams_array as $key => $fams ) {
             if ( !isset( $fams['fams'] ) ) {
-                unset( $fams_array[$key] );
+                unset($fams_array[$key]);
             }
         }
         $spouses = array();
@@ -215,7 +208,6 @@ trait Genealogical_Tree_Single_Member_Info
             if ( isset( $fams['fams'] ) && $fams['fams'] && is_array( $fams['fams'] ) ) {
                 $fams['fams'] = $fams['fams']['fams'];
             }
-            
             if ( $fams['fams'] ) {
                 $husb = ( get_post_meta( $fams['fams'], 'husb', true ) ? get_post_meta( $fams['fams'], 'husb', true ) : null );
                 $wife = ( get_post_meta( $fams['fams'], 'wife', true ) ? get_post_meta( $fams['fams'], 'wife', true ) : null );
@@ -226,7 +218,7 @@ trait Genealogical_Tree_Single_Member_Info
                 foreach ( $fams_even_array as $even_key => $even ) {
                     $spouses[$key]['even'][$even['tag']][$even_key] = $even;
                 }
-                $spouses[$key]['MARR'] = ( isset( $spouses[$key]['even']['MARR'] ) && !empty($spouses[$key]['even']['MARR']) ? current( $spouses[$key]['even']['MARR'] ) : array(
+                $spouses[$key]['MARR'] = ( isset( $spouses[$key]['even']['MARR'] ) && !empty( $spouses[$key]['even']['MARR'] ) ? current( $spouses[$key]['even']['MARR'] ) : array(
                     'date' => '',
                     'plac' => '',
                 ) );
@@ -236,7 +228,6 @@ trait Genealogical_Tree_Single_Member_Info
                 ) );
                 $spouses[$key]['chil'] = ( get_post_meta( $fams['fams'], 'chil' ) ? get_post_meta( $fams['fams'], 'chil' ) : array() );
             }
-        
         }
         /**
          * Additional fields.
@@ -265,19 +256,17 @@ trait Genealogical_Tree_Single_Member_Info
 		<table border="0" style="width:100%; max-width: 800px;" class="table table-hover table-condensed indi genealogical-tree-member">
 
 		<?php 
-        
         if ( $featured_img_url ) {
             ?>
 			<tr>
 				<td colspan="3">
 					<img src="<?php 
-            echo  esc_attr( $featured_img_url ) ;
+            echo esc_attr( $featured_img_url );
             ?>">
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<tr>
@@ -290,10 +279,10 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td width="100%" colspan="2">
 					<a href="<?php 
-        echo  esc_attr( get_the_permalink( $post_id ) ) ;
+        echo esc_attr( get_the_permalink( $post_id ) );
         ?>">
 						<?php 
-        echo  esc_html( $this->plugin->helper->get_full_name( $post_id ) ) ;
+        echo esc_html( $this->plugin->helper->get_full_name( $post_id ) );
         ?>
 					</a>
 					<?php 
@@ -303,7 +292,6 @@ trait Genealogical_Tree_Single_Member_Info
 			</tr>
 
 			<?php 
-        
         if ( $birt['date'] || $birt['plac'] ) {
             ?>
 			<tr>
@@ -314,22 +302,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $birt['date'] ) ;
+            echo esc_html( $birt['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $birt['plac'] ) ;
+            echo esc_html( $birt['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<?php 
-        
         if ( $chr['date'] || $chr['plac'] ) {
             ?>
 			<tr>
@@ -340,18 +326,17 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $chr['date'] ) ;
+            echo esc_html( $chr['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $chr['plac'] ) ;
+            echo esc_html( $chr['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<tr>
@@ -363,14 +348,13 @@ trait Genealogical_Tree_Single_Member_Info
 				<td colspan="2">
 					<span class="gt-gender-emoji">
 						<?php 
-        echo  esc_html( $gender ) ;
+        echo esc_html( $gender );
         ?>
 					</span>
 				</td>
 			</tr>
 
 			<?php 
-        
         if ( $deat['date'] || $deat['plac'] ) {
             ?>
 			<tr>
@@ -381,22 +365,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $deat['date'] ) ;
+            echo esc_html( $deat['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $deat['plac'] ) ;
+            echo esc_html( $deat['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<?php 
-        
         if ( $buri['date'] || $buri['plac'] ) {
             ?>
 			<tr>
@@ -407,22 +389,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $buri['date'] ) ;
+            echo esc_html( $buri['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $buri['plac'] ) ;
+            echo esc_html( $buri['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<?php 
-        
         if ( $bapl['date'] || $bapl['plac'] ) {
             ?>
 			<tr>
@@ -433,22 +413,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $bapl['date'] ) ;
+            echo esc_html( $bapl['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $bapl['plac'] ) ;
+            echo esc_html( $bapl['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<?php 
-        
         if ( $endl['date'] || $endl['plac'] ) {
             ?>
 			<tr>
@@ -459,23 +437,21 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $endl['date'] ) ;
+            echo esc_html( $endl['date'] );
             ?>
 				</td>
 				<td>
 					<?php 
-            echo  esc_html( $endl['plac'] ) ;
+            echo esc_html( $endl['plac'] );
             ?>
 				</td>
 			</tr>
 			<?php 
         }
-        
         ?>
 
 			<?php 
-        
-        if ( !empty($note) ) {
+        if ( !empty( $note ) ) {
             ?>
 			<tr>
 				<td valign="top"  colspan="3">
@@ -489,13 +465,11 @@ trait Genealogical_Tree_Single_Member_Info
 					<div style="max-height: 300px; width: 100%; overflow-y: scroll;">
 					<?php 
             foreach ( $note as $key => $value ) {
-                
                 if ( (!isset( $value['isRef'] ) || $value['isRef']) && $value['note'] ) {
-                    echo  esc_html( nl2br( $value['note'] ) ) ;
-                    echo  '<br>' ;
-                    echo  '<br>' ;
+                    echo nl2br( esc_textarea( $value['note'] ) );
+                    echo '<br>';
+                    echo '<br>';
                 }
-            
             }
             ?>
 					</div>
@@ -503,11 +477,10 @@ trait Genealogical_Tree_Single_Member_Info
 			</tr>
 			<?php 
         }
-        
         ?>
 
 
-			<tr>
+			<!-- <tr>
 				<td>
 					<?php 
         esc_html_e( 'Person ID', 'genealogical-tree' );
@@ -515,7 +488,7 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-        echo  esc_html( $post_id ) ;
+        echo esc_html( $post_id );
         ?>
 				</td>
 			</tr>
@@ -527,18 +500,17 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-        echo  esc_html( get_post( $post_id )->post_modified ) ;
+        echo esc_html( get_post( $post_id )->post_modified );
         ?>
 				</td>
-			</tr>
+			</tr> -->
 
 
 		</table>
 
 		<!-- Parents -->
 		<?php 
-        
-        if ( !empty($parents) ) {
+        if ( !empty( $parents ) ) {
             ?>
 			<?php 
             $parents_count = 1;
@@ -550,7 +522,7 @@ trait Genealogical_Tree_Single_Member_Info
                 ?> 
 				(
 					<?php 
-                echo  esc_html( $parents_count ) ;
+                echo esc_html( $parents_count );
                 ?> 
 					<?php 
                 $parents_count++;
@@ -559,7 +531,6 @@ trait Genealogical_Tree_Single_Member_Info
 		</h4>
 		<table border="0" style="width:100%; max-width: 800px;">
 				<?php 
-                
                 if ( $family['father_id'] ) {
                     ?>
 			<tr>
@@ -572,21 +543,19 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td width="100%" colspan="2">
 					<a href="<?php 
-                    echo  esc_attr( get_the_permalink( $family['father_id'] ) ) ;
+                    echo esc_attr( get_the_permalink( $family['father_id'] ) );
                     ?>">
 						<?php 
-                    echo  esc_html( $this->plugin->helper->get_full_name( $family['father_id'] ) ) ;
+                    echo esc_html( $this->plugin->helper->get_full_name( $family['father_id'] ) );
                     ?>
 					</a>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
                 if ( $family['mother_id'] ) {
                     ?>
 			<tr>
@@ -597,21 +566,19 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<a href="<?php 
-                    echo  esc_attr( get_the_permalink( $family['mother_id'] ) ) ;
+                    echo esc_attr( get_the_permalink( $family['mother_id'] ) );
                     ?>">
 						<?php 
-                    echo  esc_html( $this->plugin->helper->get_full_name( $family['mother_id'] ) ) ;
+                    echo esc_html( $this->plugin->helper->get_full_name( $family['mother_id'] ) );
                     ?>
 					</a>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
                 if ( isset( $family['MARR'] ) && ($family['MARR']['date'] || $family['MARR']['plac']) ) {
                     ?>
 			<tr>
@@ -622,22 +589,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['MARR']['date'] ) ;
+                    echo esc_html( $family['MARR']['date'] );
                     ?>
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['MARR']['plac'] ) ;
+                    echo esc_html( $family['MARR']['plac'] );
                     ?>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
                 if ( $family['SLGC']['date'] || $family['SLGC']['plac'] ) {
                     ?>
 			<tr>
@@ -648,23 +613,21 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['SLGC']['date'] ) ;
+                    echo esc_html( $family['SLGC']['date'] );
                     ?>
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['SLGC']['plac'] ) ;
+                    echo esc_html( $family['SLGC']['plac'] );
                     ?>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
-                if ( !empty($family['chil']) ) {
+                if ( !empty( $family['chil'] ) ) {
                     ?>
 			<tr>
 				<td valign="top">
@@ -676,7 +639,6 @@ trait Genealogical_Tree_Single_Member_Info
 					<?php 
                     $chils = array_unique( $family['chil'] );
                     foreach ( $chils as $key => $chil ) {
-                        
                         if ( $post_id !== $chil ) {
                             $gender = '⚥';
                             if ( 'M' === get_post_meta( $chil, 'sex', true ) ) {
@@ -687,27 +649,25 @@ trait Genealogical_Tree_Single_Member_Info
                             }
                             ?>
 							<a href="<?php 
-                            echo  esc_attr( get_the_permalink( $chil ) ) ;
+                            echo esc_attr( get_the_permalink( $chil ) );
                             ?>">
 								<span class="gt-gender-emoji"><?php 
-                            echo  esc_html( $gender ) ;
+                            echo esc_html( $gender );
                             ?></span> <?php 
-                            echo  esc_html( $this->plugin->helper->get_full_name( $chil ) ) ;
+                            echo esc_html( $this->plugin->helper->get_full_name( $chil ) );
                             ?>
 							</a>
 							<br>
 							<?php 
                         }
-                    
                     }
                     ?>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
-			<tr>
+			<!-- <tr>
 				<td>
 					<?php 
                 esc_html_e( 'Family  ID', 'genealogical-tree' );
@@ -715,7 +675,7 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-                echo  esc_html( $family['family_id'] ) ;
+                echo esc_html( $family['family_id'] );
                 ?>
 				</td>
 			</tr>
@@ -727,22 +687,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-                echo  esc_html( get_post( $family['family_id'] )->post_modified ) ;
+                echo esc_html( get_post( $family['family_id'] )->post_modified );
                 ?>
 				</td>
-			</tr>
+			</tr> -->
 		</table>
 		<?php 
             }
             ?>
 		<?php 
         }
-        
         ?>
 
 		<?php 
-        
-        if ( !empty($spouses) ) {
+        if ( !empty( $spouses ) ) {
             ?>
 		<!-- Families -->
 			<?php 
@@ -754,7 +712,7 @@ trait Genealogical_Tree_Single_Member_Info
                 esc_html_e( 'Spouses', 'genealogical-tree' );
                 ?> (
 				<?php 
-                echo  esc_html( $spouses_count ) ;
+                echo esc_html( $spouses_count );
                 ?>
 				<?php 
                 $spouses_count++;
@@ -770,14 +728,13 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td width="100%" colspan="2">
 				<?php 
-                
                 if ( $family['spouse'] ) {
                     ?>
 					<a href="<?php 
-                    echo  esc_attr( get_the_permalink( $family['spouse'] ) ) ;
+                    echo esc_attr( get_the_permalink( $family['spouse'] ) );
                     ?>">
 						<?php 
-                    echo  esc_html( $this->plugin->helper->get_full_name( $family['spouse'] ) ) ;
+                    echo esc_html( $this->plugin->helper->get_full_name( $family['spouse'] ) );
                     ?>
 					</a>
 					<?php 
@@ -788,12 +745,10 @@ trait Genealogical_Tree_Single_Member_Info
                     ?>
 					<?php 
                 }
-                
                 ?>
 				</td>
 			</tr>
-			<?php 
-                
+				<?php 
                 if ( $family['MARR']['date'] || $family['MARR']['plac'] ) {
                     ?>
 			<tr>
@@ -804,22 +759,20 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['MARR']['date'] ) ;
+                    echo esc_html( $family['MARR']['date'] );
                     ?>
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['MARR']['plac'] ) ;
+                    echo esc_html( $family['MARR']['plac'] );
                     ?>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
                 if ( $family['SLGS']['date'] || $family['SLGS']['plac'] ) {
                     ?>
 
@@ -831,23 +784,21 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( $family['SLGS']['date'] ) ;
+                    echo esc_html( $family['SLGS']['date'] );
                     ?>
 				</td>
 				<td>
 					<?php 
-                    echo  esc_html( ( isset( $family['SLGS']['plac'] ) ? $family['SLGS']['plac'] : '' ) ) ;
+                    echo esc_html( ( isset( $family['SLGS']['plac'] ) ? $family['SLGS']['plac'] : '' ) );
                     ?>
 				</td>
 			</tr>
 			<?php 
                 }
-                
                 ?>
 
 				<?php 
-                
-                if ( !empty($family['chil']) ) {
+                if ( !empty( $family['chil'] ) ) {
                     ?>
 			<tr>
 				<td valign="top">
@@ -869,12 +820,12 @@ trait Genealogical_Tree_Single_Member_Info
                         }
                         ?>
 						<a href="<?php 
-                        echo  esc_attr( get_the_permalink( $chil ) ) ;
+                        echo esc_attr( get_the_permalink( $chil ) );
                         ?>">
 							<span class="gt-gender-emoji"><?php 
-                        echo  esc_html( $gender ) ;
+                        echo esc_html( $gender );
                         ?></span> <?php 
-                        echo  esc_html( $this->plugin->helper->get_full_name( $chil ) ) ;
+                        echo esc_html( $this->plugin->helper->get_full_name( $chil ) );
                         ?>
 						</a>
 						<br>
@@ -885,10 +836,8 @@ trait Genealogical_Tree_Single_Member_Info
 			</tr>
 			<?php 
                 }
-                
                 ?>
-			<!--
-			<tr>
+			<!-- <tr>
 				<td>
 					<?php 
                 esc_html_e( 'Family  ID', 'genealogical-tree' );
@@ -896,7 +845,7 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-                echo  esc_html( $family['family_id'] ) ;
+                echo esc_html( $family['family_id'] );
                 ?>
 				</td>
 			</tr>
@@ -908,31 +857,28 @@ trait Genealogical_Tree_Single_Member_Info
 				</td>
 				<td colspan="2">
 					<?php 
-                echo  esc_html( get_post( $family['family_id'] )->post_modified ) ;
+                echo esc_html( get_post( $family['family_id'] )->post_modified );
                 ?>
 				</td>
-			</tr>
-			-->
+			</tr> -->
 		</table>
 		<?php 
             }
             ?>
 		<?php 
         }
-        
         ?>
 		<?php 
         $individual_events = $this->plugin->helper->get_individual_events();
         foreach ( $even_array as $key => $value ) {
-            $even_array[$key]['title'] = $this->plugin->helper->search_for_tag( $value['type'], $individual_events );
+            $even_array[$key]['ev'] = $this->plugin->helper->search_for_tag( $value['tag'], $individual_events );
             if ( !$value['date'] && !$value['plac'] ) {
-                unset( $even_array[$key] );
+                unset($even_array[$key]);
             }
         }
         ?>
 		<?php 
-        
-        if ( !empty($even_array) ) {
+        if ( !empty( $even_array ) ) {
             ?>
 		<!-- Events -->
 		<h4>
@@ -941,30 +887,36 @@ trait Genealogical_Tree_Single_Member_Info
             ?>
 		</h4>
 			<?php 
-            uasort( $even_array, array( $this->plugin->helper, 'sort_events' ) );
+            uasort( $even_array, array($this->plugin->helper, 'sort_events') );
             ?>
 		<div class="gt-tree-timeline" style="max-width:800px;">
 			<?php 
             foreach ( $even_array as $key => $value ) {
+                $even = ( $value['ev'] ? $value['ev'] : array() );
                 ?>
 			<div class="gt-tree-timeline__event">
 				<div class="gt-tree-timeline__event__icon ">
 					<i class="lni-cake"></i>
 					<div class="gt-tree-timeline__event__date">
 						<?php 
-                echo  esc_html( $value['date'] ) ;
+                echo esc_html( $value['date'] );
                 ?>
 					</div>
 				</div>
 				<div class="gt-tree-timeline__event__content ">
 					<div class="gt-tree-timeline__event__title">
 						<?php 
-                echo  esc_html( ( $value['title'] ? $value['title'] : $value['type'] ) ) ;
+                echo esc_html( ( $even['title'] ? $even['title'] : $value['type'] ) );
                 ?>
+						<small style="text-transform: initial; font-weight: 400; color: #646464;">
+							<i><?php 
+                echo esc_html( ( $even['disc'] ? $even['disc'] : '' ) );
+                ?></i>
+						</small>
 					</div>
 					<div class="gt-tree-timeline__event__description">
-						<p> 📍 <?php 
-                echo  esc_html( $value['plac'] ) ;
+						<p style="margin-bottom:0;"> 📍 <?php 
+                echo esc_html( $value['plac'] );
                 ?></p>
 					</div>
 				</div>
@@ -975,19 +927,15 @@ trait Genealogical_Tree_Single_Member_Info
 		</div>
 		<?php 
         }
-        
         ?>
-
 		<?php 
         foreach ( $additional_fields as $key => $value ) {
             if ( !$value['name'] && !$value['value'] ) {
-                unset( $additional_fields[$key] );
+                unset($additional_fields[$key]);
             }
         }
-        
-        if ( !empty($additional_fields) || get_post_meta( $post_id, 'additional_info', true ) ) {
+        if ( !empty( $additional_fields ) || get_post_meta( $post_id, 'additional_info', true ) ) {
             ?>
-
 		<!-- Additional Information -->
 		<h4>
 			<?php 
@@ -997,8 +945,7 @@ trait Genealogical_Tree_Single_Member_Info
 		<table border="0" style="width:100%; max-width: 800px;">
 
 			<?php 
-            
-            if ( !empty($additional_fields) ) {
+            if ( !empty( $additional_fields ) ) {
                 ?>
 				<?php 
                 foreach ( $additional_fields as $key => $additional_field ) {
@@ -1007,13 +954,13 @@ trait Genealogical_Tree_Single_Member_Info
 						<td>
 							<div style="width:150px;">
 								<strong><?php 
-                    echo  esc_html( $additional_fields[$key]['name'] ) ;
+                    echo esc_html( $additional_fields[$key]['name'] );
                     ?></strong>
 							</div>
 						</td>
 						<td width="100%">
 							<?php 
-                    echo  esc_html( $additional_fields[$key]['value'] ) ;
+                    echo esc_html( $additional_fields[$key]['value'] );
                     ?>
 						</td>
 					</tr>
@@ -1022,11 +969,9 @@ trait Genealogical_Tree_Single_Member_Info
                 ?>
 			<?php 
             }
-            
             ?>
 
 			<?php 
-            
             if ( get_post_meta( $post_id, 'additional_info', true ) ) {
                 ?>
 			<tr>
@@ -1037,24 +982,20 @@ trait Genealogical_Tree_Single_Member_Info
                 ?> </strong>
 					</div>
 					<?php 
-                echo  wp_kses_post( wpautop( get_post_meta( $post_id, 'additional_info', true ) ) ) ;
+                echo wp_kses_post( wpautop( get_post_meta( $post_id, 'additional_info', true ) ) );
                 ?>
 				</td>
 			</tr>
 			<?php 
             }
-            
             ?>
 
 		</table>
 		<?php 
         }
-        
         ?>
 
-
 		<?php 
-        
         if ( get_post_meta( $post_id, 'some_custom_gallery', true ) ) {
             ?>
 
@@ -1073,12 +1014,10 @@ trait Genealogical_Tree_Single_Member_Info
 		</table>
 		<?php 
         }
-        
         ?>
 
 		<?php 
-        
-        if ( $phone && !empty($phone) && current( $phone ) || $email && !empty($email) && current( $email ) || $address && !empty($address) && current( $address ) ) {
+        if ( $phone && !empty( $phone ) && current( $phone ) || $email && !empty( $email ) && current( $email ) || $address && !empty( $address ) && current( $address ) ) {
             ?>
 
 		<!-- Contact Information -->
@@ -1090,13 +1029,12 @@ trait Genealogical_Tree_Single_Member_Info
 
 		<table border="0" style="width:100%; max-width: 800px;">
 			<?php 
-            
-            if ( $phone && !empty($phone) && current( $phone ) ) {
+            if ( $phone && !empty( $phone ) && current( $phone ) ) {
                 ?>
 
 				<tr>
 					<td width="10" valign="top" rowspan="<?php 
-                echo  count( $phone ) ;
+                echo count( $phone );
                 ?>">
 						<div style="width:150px;">
 							<?php 
@@ -1117,7 +1055,7 @@ trait Genealogical_Tree_Single_Member_Info
                     ?>
 					<td>
 						<?php 
-                    echo  esc_html( $value ) ;
+                    echo esc_html( $value );
                     ?>
 					</td>
 				</tr>
@@ -1127,16 +1065,14 @@ trait Genealogical_Tree_Single_Member_Info
 
 			<?php 
             }
-            
             ?>
 
 			<?php 
-            
-            if ( $email && !empty($email) && current( $email ) ) {
+            if ( $email && !empty( $email ) && current( $email ) ) {
                 ?>
 				<tr>
 					<td rowspan="<?php 
-                echo  count( $email ) ;
+                echo count( $email );
                 ?>">
 						<?php 
                 esc_html_e( 'Email', 'genealogical-tree' );
@@ -1154,7 +1090,7 @@ trait Genealogical_Tree_Single_Member_Info
                     ?>
 					<td>
 						<?php 
-                    echo  esc_html( $value ) ;
+                    echo esc_html( $value );
                     ?>
 					</td>
 				</tr>
@@ -1163,16 +1099,14 @@ trait Genealogical_Tree_Single_Member_Info
                 ?>
 			<?php 
             }
-            
             ?>
 
 			<?php 
-            
-            if ( $address && !empty($address) && current( $address ) ) {
+            if ( $address && !empty( $address ) && current( $address ) ) {
                 ?>
 				<tr>
 					<td rowspan="<?php 
-                echo  count( $address ) ;
+                echo count( $address );
                 ?>">
 						<?php 
                 esc_html_e( 'Address', 'genealogical-tree' );
@@ -1190,7 +1124,7 @@ trait Genealogical_Tree_Single_Member_Info
                     ?>
 					<td>
 						<?php 
-                    echo  esc_html( $value ) ;
+                    echo esc_html( $value );
                     ?>
 					</td>
 				</tr>
@@ -1199,13 +1133,11 @@ trait Genealogical_Tree_Single_Member_Info
                 ?>
 			<?php 
             }
-            
             ?>
 		</table>
 
 		<?php 
         }
-        
         ?>
 
 		<!-- Colabaration -->
@@ -1228,16 +1160,13 @@ trait Genealogical_Tree_Single_Member_Info
             }
         }
         // use_request + merge_request + suggestion.
-        
         if ( is_single() && get_current_user_id() && ($allow_merge_request || $allow_use_request || $allow_suggestion) && (current_user_can( 'editor' ) || current_user_can( 'administrator' ) || current_user_can( 'gt_member' ) || current_user_can( 'gt_manager' )) && get_post_field( 'post_author', $post_id ) != get_current_user_id() ) {
             ?>
 			<div class="allow-merge-request">
 			<?php 
-            
             if ( $allow_use_request ) {
                 // use_request.
                 $use_request = ( get_post_meta( $post_id, 'use_request' ) ? get_post_meta( $post_id, 'use_request' ) : array() );
-                
                 if ( isset( $_POST['use_request'] ) ) {
                     array_push( $use_request, get_current_user_id() );
                     $use_request = array_unique( $use_request );
@@ -1246,7 +1175,6 @@ trait Genealogical_Tree_Single_Member_Info
                         add_post_meta( $post_id, 'use_request', $value );
                     }
                 }
-                
                 ?>
 				<form action="" method="POST">
 					<table>
@@ -1260,7 +1188,6 @@ trait Genealogical_Tree_Single_Member_Info
 						<tr>
 							<td>
 								<?php 
-                
                 if ( in_array( get_current_user_id(), $use_request ) ) {
                     ?>
 									<?php 
@@ -1276,7 +1203,6 @@ trait Genealogical_Tree_Single_Member_Info
 								</button>
 								<?php 
                 }
-                
                 ?>
 							</td>
 						</tr>
@@ -1284,14 +1210,10 @@ trait Genealogical_Tree_Single_Member_Info
 				</form>
 				<?php 
             }
-            
-            
             if ( $allow_merge_request ) {
-                
                 if ( isset( $_POST['merge_request'] ) ) {
                     // merge_request.
                     $merge_request = ( get_post_meta( $post_id, 'merge_request' ) ? get_post_meta( $post_id, 'merge_request' ) : array() );
-                    
                     if ( isset( $_POST['member_id'] ) && $_POST['member_id'] ) {
                         array_push( $merge_request, $_POST['member_id'] );
                         $merge_request = array_unique( $merge_request );
@@ -1300,19 +1222,16 @@ trait Genealogical_Tree_Single_Member_Info
                             add_post_meta( $post_id, 'merge_request', $value );
                         }
                     }
-                
                 }
-                
-                $query = new \WP_Query( array(
+                $query = new \WP_Query(array(
                     'post_type'      => 'gt-member',
                     'posts_per_page' => -1,
                     'author'         => get_current_user_id(),
-                    'meta_query'     => array( array(
-                    'key'     => 'merged_to',
-                    'compare' => 'NOT EXISTS',
-                ) ),
-                ) );
-                
+                    'meta_query'     => array(array(
+                        'key'     => 'merged_to',
+                        'compare' => 'NOT EXISTS',
+                    )),
+                ));
                 if ( count_user_posts( get_current_user_id(), 'gt-member' ) ) {
                     ?>
 					<form action="" method="POST">
@@ -1332,10 +1251,10 @@ trait Genealogical_Tree_Single_Member_Info
                         foreach ( $query->posts as $key => $member ) {
                             ?>
 										<option value="<?php 
-                            echo  esc_attr( $member->ID ) ;
+                            echo esc_attr( $member->ID );
                             ?>">
 											<?php 
-                            echo  esc_html( $member->post_title ) ;
+                            echo esc_html( $member->post_title );
                             ?>
 										</option>
 											<?php 
@@ -1358,13 +1277,9 @@ trait Genealogical_Tree_Single_Member_Info
 					</form>
 					<?php 
                 }
-            
             }
-            
-            
             if ( $allow_suggestion ) {
                 if ( isset( $_POST['submit_suggestion'] ) ) {
-                    
                     if ( $_POST['suggestion'] ) {
                         $suggestion = array(
                             'sent_by' => get_current_user_id(),
@@ -1372,7 +1287,6 @@ trait Genealogical_Tree_Single_Member_Info
                         );
                         add_post_meta( $post_id, 'suggestions', $suggestion );
                     }
-                
                 }
                 ?>
 				<form action="" method="POST">
@@ -1402,12 +1316,10 @@ trait Genealogical_Tree_Single_Member_Info
 				</form>
 			<?php 
             }
-            
             ?>
 			</div>
 		<?php 
         }
-        
         ?>
 
 		<?php 

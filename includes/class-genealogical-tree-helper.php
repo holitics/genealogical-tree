@@ -138,7 +138,7 @@ class Genealogical_Tree_Helper {
 			),
 			'DEAT' => array(
 				'type'  => 'DEAT',
-				'title' => 'Ceath',
+				'title' => 'Death',
 				'disc'  => 'Mortal life terminates.',
 			),
 			'EMIG' => array(
@@ -275,7 +275,7 @@ class Genealogical_Tree_Helper {
 	public function search_for_tag( $tag, $events ) {
 		foreach ( $events as $key => $val ) {
 			if ( $val['type'] === $tag ) {
-				return $val['title'];
+				return $val;
 			}
 		}
 		return null;
@@ -293,6 +293,7 @@ class Genealogical_Tree_Helper {
 			'family'                     => null,
 			'root'                       => null,
 			'root_highlight'             => 'on',
+			'gt_frontend'             	 => 'on',
 			'style'                      => '1',
 			'layout'                     => 'vr',
 			'ajax'                       => false,
@@ -430,79 +431,13 @@ class Genealogical_Tree_Helper {
 	 */
 	public function sort_events( $event_prev, $event_next ) {
 
-		$birt_prev = str_replace( array( 'BEF', 'EST', 'AFT', 'FROM', 'TO', 'ABT' ), array( '', '', '', '', '', '' ), $event_prev['date'] );
-		$birt_next = str_replace( array( 'BEF', 'EST', 'AFT', 'FROM', 'TO', 'ABT' ), array( '', '', '', '', '', '' ), $event_next['date'] );
+		$event_prev = str_replace( array( 'BEF', 'EST', 'AFT', 'FROM', 'TO', 'ABT' ), array( '', '', '', '', '', '' ), $event_prev['date'] );
+		$event_next = str_replace( array( 'BEF', 'EST', 'AFT', 'FROM', 'TO', 'ABT' ), array( '', '', '', '', '', '' ), $event_next['date'] );
 
-		$birt_prev = strtotime( $birt_prev );
-		$birt_next = strtotime( $birt_next );
+		$event_prev = strtotime( $event_prev );
+		$event_next = strtotime( $event_next );
 
-		$birt_prev = date( 'Y-d-m', $birt_prev );
-		$birt_next = date( 'Y-d-m', $birt_next );
-
-		$event_prev = explode( '-', $birt_prev );
-		$event_next = explode( '-', $birt_next );
-
-		if ( isset( $event_prev[0] ) ) {
-			if ( ! is_numeric( $event_prev[0] ) ) {
-				$event_prev[0] = intval( $event_prev[0] );
-			}
-		} else {
-			$event_prev[0] = 0;
-		}
-
-		if ( isset( $event_prev[1] ) ) {
-			if ( ! is_numeric( $event_prev[1] ) ) {
-				$event_prev[1] = intval( $event_prev[1] );
-			}
-		} else {
-			$event_prev[1] = 0;
-		}
-
-		if ( isset( $event_prev[2] ) ) {
-			if ( ! is_numeric( $event_prev[2] ) ) {
-				$event_prev[2] = intval( $event_prev[2] );
-			}
-		} else {
-			$event_prev[2] = 0;
-		}
-
-		if ( isset( $event_next[0] ) ) {
-			if ( ! is_numeric( $event_next[0] ) ) {
-				$event_next[0] = intval( $event_next[0] );
-			}
-		} else {
-			$event_next[0] = 0;
-		}
-
-		if ( isset( $event_next[1] ) ) {
-			if ( ! is_numeric( $event_next[1] ) ) {
-				$event_next[1] = intval( $event_next[1] );
-			}
-		} else {
-			$event_next[1] = 0;
-		}
-
-		if ( isset( $event_next[2] ) ) {
-			if ( ! is_numeric( $event_next[2] ) ) {
-				$event_next[2] = intval( $event_next[2] );
-			}
-		} else {
-			$event_next[2] = 0;
-		}
-
-		$year_distance = $event_prev[0] - $event_next[0];
-
-		if ( 0 !== $year_distance ) {
-			return $year_distance;
-		} else {
-			$month_distance = $event_prev[1] - $event_next[1];
-			if ( 0 !== $month_distance ) {
-				return $month_distance;
-			} else {
-				$day_distance = $event_prev[2] - $event_next[2];
-				return $day_distance;
-			}
-		}
+		return $event_prev - $event_next;
 	}
 
 	/**
@@ -516,96 +451,58 @@ class Genealogical_Tree_Helper {
 	 * @since    1.0.0
 	 */
 	public function sort_siblings( $member_prev, $member_next ) {
-		$event_prev = get_post_meta( $member_prev, 'event', true );
 
-		$birt_prev = null;
+		$birt_prev = $this->get_member_birt( $member_prev );
+		$birt_next = $this->get_member_birt( $member_next );
 
-		if ( isset( $event_prev['birt'] ) && $event_prev['birt'] ) {
-			if ( null !== current( $event_prev['birt'] ) && current( $event_prev['birt'] ) ) {
-				$birt_prev = current( $event_prev['birt'] )['date'];
+		$birt_date_prev = '';
+		$birt_date_next = '';
+
+		if ( isset( $birt_prev['date'] ) && $birt_prev['date'] ) {
+			$birt_date_prev = $birt_prev['date'];
+		}
+
+		if ( isset( $birt_next['date'] ) && $birt_next['date'] ) {
+			$birt_date_next = $birt_next['date'];
+		}
+
+		$birt_prev = strtotime( $birt_date_prev );
+		$birt_next = strtotime( $birt_date_next );
+
+		return $birt_prev - $birt_next;
+	}
+
+	/**
+	 * It returns the birth event of a member
+	 *
+	 * @param string $member_id The ID of the member you want to get the birth information for.
+	 *
+	 * @return array The birth information.
+	 *
+	 * @since    1.0.0
+	 */
+	public function get_member_birt( $member_id ) {
+
+		$even_array = get_post_meta( $member_id, 'even' ) ? get_post_meta( $member_id, 'even' ) : array();
+
+		foreach ( $even_array as $key => $value ) {
+			$even_array[ $key ]['tag'] = strtoupper( $even_array[ $key ]['tag'] );
+		}
+
+		$event = array();
+
+		foreach ( $even_array as $key => $value ) {
+			if ( 'BIRT' === $value['tag'] ) {
+				$event['BIRT'][ $key ] = $value;
 			}
 		}
 
-		$event_next = get_post_meta( $member_next, 'event', true );
+		$birt = ( isset( $event['BIRT'] ) && ! empty( $event['BIRT'] ) ) ? current( $event['BIRT'] ) : array(
+			'date' => '',
+			'plac' => '',
+		);
 
-		$birt_next = null;
-
-		if ( isset( $event_next['birt'] ) && $event_next['birt'] ) {
-			if ( null !== current( $event_next['birt'] ) && current( $event_next['birt'] ) ) {
-				$birt_next = current( $event_next['birt'] )['date'];
-			}
-		}
-
-		$birt_prev = strtotime( $birt_prev );
-		$birt_next = strtotime( $birt_next );
-
-		$birt_prev = date( 'Y-d-m', $birt_prev );
-		$birt_next = date( 'Y-d-m', $birt_next );
-
-		$member_prev = explode( '-', $birt_prev );
-		$member_next = explode( '-', $birt_next );
-
-		if ( isset( $member_prev[0] ) ) {
-			if ( ! is_numeric( $member_prev[0] ) ) {
-				$member_prev[0] = intval( $member_prev[0] );
-			}
-		} else {
-			$member_prev[0] = 0;
-		}
-
-		if ( isset( $member_prev[1] ) ) {
-			if ( ! is_numeric( $member_prev[1] ) ) {
-				$member_prev[1] = intval( $member_prev[1] );
-			}
-		} else {
-			$member_prev[1] = 0;
-		}
-
-		if ( isset( $member_prev[2] ) ) {
-			if ( ! is_numeric( $member_prev[2] ) ) {
-				$member_prev[2] = intval( $member_prev[2] );
-			}
-		} else {
-			$member_prev[2] = 0;
-		}
-
-		if ( isset( $member_next[0] ) ) {
-			if ( ! is_numeric( $member_next[0] ) ) {
-				$member_next[0] = intval( $member_next[0] );
-			}
-		} else {
-			$member_next[0] = 0;
-		}
-
-		if ( isset( $member_next[1] ) ) {
-			if ( ! is_numeric( $member_next[1] ) ) {
-				$member_next[1] = intval( $member_next[1] );
-			}
-		} else {
-			$member_next[1] = 0;
-		}
-
-		if ( isset( $member_next[2] ) ) {
-			if ( ! is_numeric( $member_next[2] ) ) {
-				$member_next[2] = intval( $member_next[2] );
-			}
-		} else {
-			$member_next[2] = 0;
-		}
-
-		$year_distance = $member_prev[0] - $member_next[0];
-
-		if ( 0 !== $year_distance ) {
-			return $year_distance;
-		} else {
-			$month_distance = $member_prev[1] - $member_next[1];
-			if ( 0 !== $month_distance ) {
-				return $month_distance;
-			} else {
-				$day_distance = $member_prev[2] - $member_next[2];
-				return $day_distance;
-			}
-		}
+		return $birt;
 	}
 
 	/**
@@ -623,7 +520,7 @@ class Genealogical_Tree_Helper {
 		}
 		foreach ( $base as $key => $value ) {
 			if ( is_array( $value ) ) {
-				$base[ $key ] = $this->tree_merge( $value, $input[ $key ] ? $input[ $key ] : array() );
+				$base[ $key ] = $this->tree_merge( $value, ( isset( $input[ $key ] ) && $input[ $key ] && is_array( $input[ $key ] ) ) ? $input[ $key ] : array() );
 			} else {
 				$base[ $key ] = ( isset( $input[ $key ] ) && $input[ $key ] ) ? $input[ $key ] : '';
 			}

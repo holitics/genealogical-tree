@@ -3,7 +3,7 @@
         'name' => 'akdevsfr/genealogical-tree',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => 'ea1c47048d3d8dd3e51ff96e4425d6536194c2d8',
+        'reference' => '3b84a1d58c88a6d46f386332cd973549c700c930',
         'type' => 'wordpress-plugin',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'akdevsfr/genealogical-tree' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => 'ea1c47048d3d8dd3e51ff96e4425d6536194c2d8',
+            'reference' => '3b84a1d58c88a6d46f386332cd973549c700c930',
             'type' => 'wordpress-plugin',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

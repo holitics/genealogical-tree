@@ -10,6 +10,7 @@
  */
 
 $notes = $args['notes'];
+
 $admin = $args['admin'];
 ?>
 <table id="table-member-notes" style="max-width:500px;" class="gta-table">

@@ -11,7 +11,7 @@
  */
 namespace Zqe;
 
-use function  GuzzleHttp\json_decode ;
+use function GuzzleHttp\json_decode;
 /**
  * The public-facing functionality of the plugin.
  *
@@ -22,17 +22,16 @@ use function  GuzzleHttp\json_decode ;
  * @subpackage Genealogical_Tree/public
  * @author     ak devs <akdevs.fr@gmail.com>
  */
-class Genealogical_Tree_Public
-{
-    use  \Zqe\Traits\Genealogical_Tree_Style_1 ;
-    use  \Zqe\Traits\Genealogical_Tree_Style_2 ;
-    use  \Zqe\Traits\Genealogical_Tree_Style_3 ;
-    use  \Zqe\Traits\Genealogical_Tree_Style_4 ;
-    use  \Zqe\Traits\Genealogical_Tree_Style_5 ;
-    use  \Zqe\Traits\Genealogical_Tree_Single_Member_Info ;
-    use  \Zqe\Traits\Genealogical_Tree_Ind_Style ;
-    use  \Zqe\Traits\Genealogical_Tree_Ind_Style_Unknown ;
-    use  \Zqe\Traits\Genealogical_Tree_Style_Alter ;
+class Genealogical_Tree_Public {
+    use \Zqe\Traits\Genealogical_Tree_Style_1;
+    use \Zqe\Traits\Genealogical_Tree_Style_2;
+    use \Zqe\Traits\Genealogical_Tree_Style_3;
+    use \Zqe\Traits\Genealogical_Tree_Style_4;
+    use \Zqe\Traits\Genealogical_Tree_Style_5;
+    use \Zqe\Traits\Genealogical_Tree_Single_Member_Info;
+    use \Zqe\Traits\Genealogical_Tree_Ind_Style;
+    use \Zqe\Traits\Genealogical_Tree_Ind_Style_Unknown;
+    use \Zqe\Traits\Genealogical_Tree_Style_Alter;
     /**
      * The ID of this plugin.
      *
@@ -40,25 +39,24 @@ class Genealogical_Tree_Public
      * @access   private
      * @var      Genealogical_Tree  $plugin  plugin.
      */
-    private  $plugin ;
+    private $plugin;
+
     /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
      * @param      string $plugin     The name of the plugin.
      */
-    public function __construct( $plugin )
-    {
+    public function __construct( $plugin ) {
         $this->plugin = $plugin;
     }
-    
+
     /**
      * Register the stylesheets for the public-facing side of the site.
      *
      * @since    1.0.0
      */
-    public function enqueue_styles()
-    {
+    public function enqueue_styles() {
         /**
          * This function is provided for demonstration purposes only.
          *
@@ -78,14 +76,13 @@ class Genealogical_Tree_Public
             'all'
         );
     }
-    
+
     /**
      * Register the JavaScript for the public-facing side of the site.
      *
      * @since    1.0.0
      */
-    public function enqueue_scripts()
-    {
+    public function enqueue_scripts() {
         /**
          * This function is provided for demonstration purposes only.
          *
@@ -100,14 +97,14 @@ class Genealogical_Tree_Public
         wp_enqueue_script(
             $this->plugin->name . '-panzoom',
             plugin_dir_url( __FILE__ ) . 'js/panzoom.min.js',
-            array( 'jquery' ),
+            array('jquery'),
             $this->plugin->version,
             true
         );
         wp_enqueue_script(
             $this->plugin->name,
             plugin_dir_url( __FILE__ ) . 'js/genealogical-tree-public.min.js',
-            array( 'jquery' ),
+            array('jquery'),
             $this->plugin->version,
             true
         );
@@ -126,7 +123,7 @@ class Genealogical_Tree_Public
         }
         wp_localize_script( $this->plugin->name, 'gt_obj', $gt_obj );
     }
-    
+
     /**
      * Function for `gt_member_gallery_images`
      *
@@ -134,8 +131,7 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function gt_member_gallery_images( $post_id )
-    {
+    public function gt_member_gallery_images( $post_id ) {
         $value = get_post_meta( $post_id, 'some_custom_gallery', true );
         $images = get_posts( array(
             'post_type'      => 'attachment',
@@ -145,34 +141,32 @@ class Genealogical_Tree_Public
             'numberposts'    => -1,
             'post_mime_type' => 'image',
         ) );
-        
-        if ( !empty($images) ) {
+        if ( !empty( $images ) ) {
             ?>
 			<div>
-				<ul class="gt-member-gallery-images">
-					<?php 
+				<div class="gt-member-gallery-images">
+				<?php 
             foreach ( $images as $image ) {
                 ?>
-					<li data-id="<?php 
-                echo  esc_attr( $image->ID ) ;
+					<figure data-id="<?php 
+                echo esc_attr( $image->ID );
                 ?>">
-						<span>
-							<img src="<?php 
-                echo  esc_attr( wp_get_attachment_image_src( $image->ID, array( 80, 80 ) )[0] ) ;
+						<img src="<?php 
+                echo esc_attr( wp_get_attachment_image_src( $image->ID, array(80, 80) )[0] );
                 ?>">
-						</span>
-					</li>
-					<?php 
+						<figcaption><?php 
+                echo ( wp_get_attachment_caption( $image->ID ) ? wp_get_attachment_caption( $image->ID ) : get_the_title( $image->ID ) );
+                ?></figcaption>
+					</figure>
+				<?php 
             }
             ?>
-				</ul>
-				<div style="clear:both"></div>
+				</div>
 			</div>
 			<?php 
         }
-    
     }
-    
+
     /**
      * Function for `get_tree_link`
      *
@@ -182,35 +176,32 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function get_tree_link( $post_id )
-    {
+    public function get_tree_link( $post_id ) {
         $gt_family_group = get_the_terms( $post_id, 'gt-family-group' );
         if ( $gt_family_group && !is_wp_error( $gt_family_group ) ) {
             if ( $gt_family_group ) {
                 foreach ( $gt_family_group as $key => $term ) {
                     $tree_page = get_term_meta( $term->term_id, 'tree_page', true );
-                    
                     if ( get_post( $tree_page ) ) {
                         ?>
 						<a class="tree_link" title="Family Tree – <?php 
-                        echo  esc_attr( $term->name ) ;
+                        echo esc_attr( $term->name );
                         ?>" href="<?php 
-                        echo  esc_attr( get_the_permalink( $tree_page ) ) ;
+                        echo esc_attr( get_the_permalink( $tree_page ) );
                         ?>?root=<?php 
-                        echo  esc_attr( $post_id ) ;
+                        echo esc_attr( $post_id );
                         ?>">
 							<img style="display:inline-block; width: 20px;" src="<?php 
-                        echo  esc_attr( GENEALOGICAL_TREE_DIR_URL ) ;
+                        echo esc_attr( GENEALOGICAL_TREE_DIR_URL );
                         ?>public/img/family-tree.svg">
 						</a>
 						<?php 
                     }
-                
                 }
             }
         }
     }
-    
+
     /**
      * It returns an array of all the members in a family group, and whether they are alone, single, or
      * dual
@@ -221,17 +212,19 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function get_root_by_family_group( $family_group )
-    {
-        $query = new \WP_Query( array(
+    public function get_root_by_family_group( $family_group ) {
+        if ( !get_term_by( 'id', $family_group, 'gt-family-group' ) ) {
+            return 0;
+        }
+        $query = new \WP_Query(array(
             'post_type'      => 'gt-member',
             'posts_per_page' => -1,
-            'tax_query'      => array( array(
-            'taxonomy' => 'gt-family-group',
-            'field'    => 'term_id',
-            'terms'    => $family_group,
-        ) ),
-        ) );
+            'tax_query'      => array(array(
+                'taxonomy' => 'gt-family-group',
+                'field'    => 'term_id',
+                'terms'    => $family_group,
+            )),
+        ));
         $alone_array = array();
         $final_array = array();
         $getdual_new = array();
@@ -242,30 +235,27 @@ class Genealogical_Tree_Public
                 /* Removing all the elements from the array that are not arrays. */
                 foreach ( $fams as $key => $value ) {
                     if ( !is_array( $value ) ) {
-                        unset( $fams[$key] );
+                        unset($fams[$key]);
                     }
                 }
                 /* Removing all the elements from the array that are not arrays. */
                 foreach ( $fams as $key => $value ) {
                     if ( !is_array( $value ) ) {
-                        unset( $fams[$key] );
+                        unset($fams[$key]);
                     }
                 }
                 /* Checking if the member has a spouse and if the spouse has a family. */
-                if ( !empty($fams) && empty($famc) ) {
+                if ( !empty( $fams ) && empty( $famc ) ) {
                     foreach ( $fams as $fam ) {
                         $husb = (int) get_post_meta( $fam['fams'], 'husb', true );
                         $wife = (int) get_post_meta( $fam['fams'], 'wife', true );
-                        
                         if ( $wife && $husb ) {
                             $spouse = ( $wife === (int) $member->ID ? $husb : $wife );
                             $famc = ( get_post_meta( $spouse, 'famc' ) ? get_post_meta( $spouse, 'famc' ) : array() );
-                            
-                            if ( empty($famc) ) {
+                            if ( empty( $famc ) ) {
                                 $getdual_new[$husb . $wife][0] = $husb;
                                 $getdual_new[$husb . $wife][1] = $wife;
                             }
-                        
                         } else {
                             if ( $husb ) {
                                 $final_array[$husb]['husb'] = $husb;
@@ -274,14 +264,13 @@ class Genealogical_Tree_Public
                                 $final_array[$wife]['wife'] = $wife;
                             }
                         }
-                    
                     }
                 }
                 /*
                 Checking if the family (parent) ID is empty and if the family (spouse) ID is empty. If both are empty, it
                 adds the member ID to the .
                 */
-                if ( empty($famc) && empty($fams) ) {
+                if ( empty( $famc ) && empty( $fams ) ) {
                     $alone_array[] = $member->ID;
                 }
             }
@@ -293,7 +282,7 @@ class Genealogical_Tree_Public
         );
         return $data;
     }
-    
+
     /**
      * It returns the default root of a family tree
      *
@@ -303,8 +292,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function get_default_root( $family )
-    {
+    public function get_default_root( $family ) {
         $tree_root = $this->get_root_by_family_group( $family );
         if ( $tree_root['single'] ) {
             foreach ( $tree_root['single'] as $key => $value ) {
@@ -321,9 +309,14 @@ class Genealogical_Tree_Public
                 return $value[0];
             }
         }
+        if ( $tree_root['alone'] ) {
+            foreach ( $tree_root['alone'] as $key => $value ) {
+                return $value;
+            }
+        }
         return null;
     }
-    
+
     /**
      * It gets all the families for a given root person
      *
@@ -334,30 +327,36 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function get_families_by_root( $root, $setting = array() )
-    {
+    public function get_families_by_root( $root, $setting = array() ) {
         $fams = ( get_post_meta( $root, 'fams' ) ? get_post_meta( $root, 'fams' ) : array() );
+        // Create a mapping from fams to order
+        $orderMap = [];
+        foreach ( $fams as $element ) {
+            $orderMap[$element['fams']] = ( isset( $element['order'] ) ? $element['order'] : 0 );
+        }
         foreach ( $fams as $key => $value ) {
             if ( isset( $value['fams'] ) && $value['fams'] && is_array( $value['fams'] ) ) {
                 $value['fams'] = $value['fams']['fams'];
             }
-            
             if ( isset( $value['fams'] ) && $value['fams'] ) {
                 $fams[] = $value['fams'];
-                unset( $fams[$key] );
+                unset($fams[$key]);
             }
-        
         }
         $fams = array_unique( $fams );
-        if ( empty($fams) ) {
+        if ( empty( $fams ) ) {
             return array();
         }
-        $query = new \WP_Query( array(
+        $query = new \WP_Query(array(
             'post_type'      => 'gt-family',
             'posts_per_page' => -1,
             'post__in'       => $fams,
-        ) );
+        ));
         $families = $query->posts;
+        // Sort array-2 based on the order defined in array-1
+        usort( $families, function ( $a, $b ) use($orderMap) {
+            return $orderMap[$a->ID] <=> $orderMap[$b->ID];
+        } );
         foreach ( $families as $keyx => $family ) {
             $family->husb = (int) get_post_meta( $family->ID, 'husb', true );
             $family->wife = (int) get_post_meta( $family->ID, 'wife', true );
@@ -366,22 +365,20 @@ class Genealogical_Tree_Public
             $chill_ids = ( get_post_meta( $family->ID, 'chil' ) ? get_post_meta( $family->ID, 'chil' ) : array() );
             sort( $chill_ids );
             if ( isset( $setting->sibling_order ) && 'oldest' === (string) $setting->sibling_order ) {
-                uasort( $chill_ids, array( $this->plugin->helper, 'sort_siblings' ) );
+                uasort( $chill_ids, array($this->plugin->helper, 'sort_siblings') );
             }
-            
             if ( isset( $setting->sibling_order ) && 'youngest' === (string) $setting->sibling_order ) {
-                uasort( $chill_ids, array( $this->plugin->helper, 'sort_siblings' ) );
+                uasort( $chill_ids, array($this->plugin->helper, 'sort_siblings') );
                 $chill_ids = array_reverse( $chill_ids );
             }
-            
             $family->chil = $chill_ids;
             if ( !$family->chil && !$family->spouse ) {
-                unset( $families[$keyx] );
+                unset($families[$keyx]);
             }
         }
         return $families;
     }
-    
+
     /**
      * It returns an array of all the member IDs that are in a given family
      *
@@ -391,21 +388,20 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function get_all_members_of_family( $family_id )
-    {
-        $query = new \WP_Query( array(
+    public function get_all_members_of_family( $family_id ) {
+        $query = new \WP_Query(array(
             'post_type'      => 'gt-member',
             'posts_per_page' => -1,
             'fields'         => 'ids',
-            'tax_query'      => array( array(
-            'taxonomy' => 'gt-family-group',
-            'field'    => 'term_id',
-            'terms'    => $family_id,
-        ) ),
-        ) );
+            'tax_query'      => array(array(
+                'taxonomy' => 'gt-family-group',
+                'field'    => 'term_id',
+                'terms'    => $family_id,
+            )),
+        ));
         return $query->posts;
     }
-    
+
     /**
      * It removes all whitespace from a string
      *
@@ -415,8 +411,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function clean_css( $inline_css )
-    {
+    public function clean_css( $inline_css ) {
         $inline_css = str_ireplace( array(
             "\r\n",
             "\r",
@@ -426,7 +421,7 @@ class Genealogical_Tree_Public
         $inline_css = preg_replace( '/\\s+/', ' ', $inline_css );
         return trim( $inline_css );
     }
-    
+
     /**
      * It generates a random string of a given length
      *
@@ -437,16 +432,15 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function generate_random_string( $length = 10, $random_string = '' )
-    {
+    public function generate_random_string( $length = 10, $random_string = '' ) {
         $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $characters_length = strlen( $characters );
-        for ( $i = 0 ;  $i < $length ;  $i++ ) {
+        for ($i = 0; $i < $length; $i++) {
             $random_string .= $characters[wp_rand( 0, $characters_length - 1 )];
         }
         return $random_string;
     }
-    
+
     /**
      * If the post type is gt-member or gt-tree, and the post is not password protected, then return the
      * shortcode for that post type
@@ -457,24 +451,46 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function data_in_single_page( $content )
-    {
-        global  $post ;
+    public function the_content_filter( $content ) {
+        global $post;
         $post_id = $post->ID;
+        if ( post_password_required() ) {
+            return $content;
+        }
         if ( 'gt-member' === (string) $post->post_type ) {
             return do_shortcode( '[gt-member id=' . $post_id . ']' ) . $content;
         }
         if ( 'gt-tree' === (string) $post->post_type ) {
-            if ( !is_archive() ) {
-                return do_shortcode( '[tree id=' . $post_id . ']' ) . $content;
-            }
-        }
-        if ( post_password_required() ) {
-            return $content;
+            return do_shortcode( '[tree id=' . $post_id . ']' ) . $content;
         }
         return $content;
     }
-    
+
+    /**
+     * If the post type is gt-member or gt-tree, and the post is not password protected, then return the
+     * shortcode for that post type
+     *
+     * @param  string $excerpt The content of the post.
+     *
+     * @return string The content of the post.
+     *
+     * @since    1.0.0
+     */
+    public function get_the_excerpt_filter( $excerpt, $post ) {
+        if ( 'gt-member' === (string) $post->post_type ) {
+            remove_filter( 'the_excerpt', 'wpautop' );
+            return do_shortcode( '[gt-member id=' . $post->ID . ']' );
+        }
+        if ( 'gt-tree' === (string) $post->post_type ) {
+            remove_filter( 'the_excerpt', 'wpautop' );
+            return '<a href="' . get_the_permalink( $post->ID ) . '">View Tree</a>';
+        }
+        if ( post_password_required() ) {
+            return $excerpt;
+        }
+        return $excerpt;
+    }
+
     /**
      * Display tree style.
      *
@@ -485,14 +501,12 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function display_tree_style( $tree, $setting )
-    {
+    public function display_tree_style( $tree, $setting ) {
         include plugin_dir_path( __FILE__ ) . 'partials/genealogical-tree-meta-tree-google-fonts.php';
         $class = '';
         $html = '';
         $base = $this->plugin->helper->tree_default_meta();
         $setting = $this->plugin->helper->tree_merge( $base, $setting );
-        // $setting = $this->plugin->helper->tree_combine_meta( $setting );
         $setting = \json_decode( \wp_json_encode( $setting ) );
         $rand_id = $this->generate_random_string();
         include plugin_dir_path( __FILE__ ) . 'partials/genealogical-tree-settings.php';
@@ -515,15 +529,16 @@ class Genealogical_Tree_Public
         if ( isset( $setting->popup ) && 'on' === (string) $setting->popup ) {
             $class .= ' gt-tree-popup ';
         }
-        
         if ( isset( $setting->ajax ) && 'on' === (string) $setting->ajax ) {
             $ajax_html = ' data-setting=\'' . wp_json_encode( $setting ) . '\' data-id="' . $tree . '"';
         } else {
             $ajax_html = '';
         }
-        
         $html .= '<div id="famTree" class="gt-tree-collapse ' . $rand_id . ' gt-tree ' . $class . '" ' . $ajax_html . '>';
         $generation = (( $setting->generation_start_from ? $setting->generation_start_from : 1 )) - 1;
+        if ( $setting->gt_frontend == 'on' && current_user_can( 'edit_posts' ) && class_exists( 'ZQE\\Genealogical_Tree_Frontend\\Providers\\ServiceProvider' ) ) {
+            $setting->style = 1;
+        }
         if ( !$ajax_html ) {
             if ( '1' === (string) $setting->style ) {
                 $html .= $this->display_tree_style1( $tree, $setting, $generation );
@@ -561,7 +576,7 @@ class Genealogical_Tree_Public
 			</div>
 		</div>';
     }
-    
+
     /**
      * Get display tree for shortcode.
      *
@@ -572,8 +587,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function tree_shortcode( $atts, $content = null )
-    {
+    public function tree_shortcode( $atts, $content = null ) {
         $opt = array(
             'id' => null,
         );
@@ -586,9 +600,12 @@ class Genealogical_Tree_Public
             return __( 'No data. Family ID required', 'genealogical-tree' );
         }
         $family_group_id = $data['family'];
-        unset( $data['family'] );
+        if ( !get_term_by( 'id', $family_group_id, 'gt-family-group' ) ) {
+            return __( 'Family group does not exist. Family group required', 'genealogical-tree' );
+        }
+        unset($data['family']);
         $is_default = false;
-        if ( empty($data) ) {
+        if ( empty( $data ) ) {
             $is_default = true;
         }
         $base = $this->plugin->helper->tree_default_meta();
@@ -608,7 +625,7 @@ class Genealogical_Tree_Public
         }
         return $this->display_tree_style( $root, $data );
     }
-    
+
     /**
      * Get display tree for shortcode
      *
@@ -619,8 +636,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function gt_tree_shortcode( $atts, $content = null )
-    {
+    public function gt_tree_shortcode( $atts, $content = null ) {
         $data = array(
             'image'           => 'true',
             'layout'          => 'gt-vr',
@@ -670,7 +686,7 @@ class Genealogical_Tree_Public
         }
         return $this->display_tree_style( $root, $data );
     }
-    
+
     /**
      * It takes a family group ID, finds the root of the tree, and then displays a list of links to the
      * tree for each root
@@ -682,8 +698,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function gt_tree_list_shortcode( $atts, $content = null )
-    {
+    public function gt_tree_list_shortcode( $atts, $content = null ) {
         $data = shortcode_atts( array(
             'family' => null,
         ), $atts );
@@ -702,40 +717,36 @@ class Genealogical_Tree_Public
 		<?php 
         if ( $tree_root['single'] ) {
             foreach ( $tree_root['single'] as $value ) {
-                
                 if ( isset( $value['husb'] ) && $value['husb'] ) {
                     ?>
 					<div>
 						<a href="<?php 
-                    echo  esc_attr( get_the_permalink( $post_id ) ) ;
+                    echo esc_attr( get_the_permalink( $post_id ) );
                     ?>?root=<?php 
-                    echo  esc_attr( $value['husb'] ) ;
+                    echo esc_attr( $value['husb'] );
                     ?>">
 							<?php 
-                    echo  esc_html( get_the_title( $value['husb'] ) ) ;
+                    echo esc_html( get_the_title( $value['husb'] ) );
                     ?>
 						</a>
 					</div>
 					<?php 
                 }
-                
-                
                 if ( isset( $value['wife'] ) && $value['wife'] ) {
                     ?>
 					<div>
 						<a href="<?php 
-                    echo  esc_attr( get_the_permalink( $post_id ) ) ;
+                    echo esc_attr( get_the_permalink( $post_id ) );
                     ?>?root=<?php 
-                    echo  esc_attr( $value['wife'] ) ;
+                    echo esc_attr( $value['wife'] );
                     ?>">
 							<?php 
-                    echo  esc_html( get_the_title( $value['wife'] ) ) ;
+                    echo esc_html( get_the_title( $value['wife'] ) );
                     ?>
 						</a>
 					</div>
 					<?php 
                 }
-            
             }
         }
         if ( $tree_root['dual'] ) {
@@ -743,50 +754,48 @@ class Genealogical_Tree_Public
                 ?>
 				<div>
 					<a href="<?php 
-                echo  esc_attr( get_the_permalink( $post_id ) ) ;
+                echo esc_attr( get_the_permalink( $post_id ) );
                 ?>?root=<?php 
-                echo  esc_attr( $value[0] ) ;
+                echo esc_attr( $value[0] );
                 ?>">
 						<?php 
-                echo  esc_html( get_the_title( $value[0] ) ) ;
+                echo esc_html( get_the_title( $value[0] ) );
                 ?> and <?php 
-                echo  esc_html( get_the_title( $value[1] ) ) ;
+                echo esc_html( get_the_title( $value[1] ) );
                 ?>
 					</a>
 				</div>
 				<?php 
             }
         }
-        
         if ( $tree_root['alone'] ) {
             ?>
 			<h4><?php 
-            echo  esc_html__( 'Alone', 'genealogical-tree' ) ;
+            echo esc_html__( 'Alone', 'genealogical-tree' );
             ?></h4>
 			<?php 
             foreach ( $tree_root['alone'] as $value ) {
                 ?>
 				<div>
 					<a href="<?php 
-                echo  esc_attr( get_the_permalink( $post_id ) ) ;
+                echo esc_attr( get_the_permalink( $post_id ) );
                 ?>?root=<?php 
-                echo  esc_attr( $value ) ;
+                echo esc_attr( $value );
                 ?>">
 						<?php 
-                echo  esc_html( get_the_title( $value ) ) ;
+                echo esc_html( get_the_title( $value ) );
                 ?>
 					</a>
 				</div>
 				<?php 
             }
         }
-        
         ?>
 		</div>
 		<?php 
         return ob_get_clean();
     }
-    
+
     /**
      * It takes the ID of a member and returns the HTML for that member's information
      *
@@ -797,8 +806,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function gt_member_shortcode( $atts, $content = null )
-    {
+    public function gt_member_shortcode( $atts, $content = null ) {
         $data = shortcode_atts( array(
             'id' => null,
         ), $atts );
@@ -810,7 +818,7 @@ class Genealogical_Tree_Public
         }
         return $this->single_member_info( $data['id'] );
     }
-    
+
     /**
      * It takes the shortcode attributes, and if there's a family attribute, it gets all the members of
      * that family and displays them. If there's an ids attribute, it gets the members with those ids and
@@ -823,8 +831,7 @@ class Genealogical_Tree_Public
      *
      * @since    1.0.0
      */
-    public function gt_members_shortcode( $atts, $content = null )
-    {
+    public function gt_members_shortcode( $atts, $content = null ) {
         $data = shortcode_atts( array(
             'family' => null,
             'ids'    => null,
@@ -837,8 +844,7 @@ class Genealogical_Tree_Public
             $members = explode( ',', $data['ids'] );
         }
         ob_start();
-        
-        if ( is_array( $members ) && !empty($members) ) {
+        if ( is_array( $members ) && !empty( $members ) ) {
             ?>
 			<div class="gt-members-public">
 				<ul>
@@ -847,7 +853,7 @@ class Genealogical_Tree_Public
                 ?>
 					<li>
 					<h3> # <?php 
-                echo  esc_html( get_the_title( $member ) ) ;
+                echo esc_html( get_the_title( $member ) );
                 ?></h3>
 					<?php 
                 $this->single_member_info( $member );
@@ -860,10 +866,9 @@ class Genealogical_Tree_Public
 			</div>
 			<?php 
         }
-        
         return ob_get_clean();
     }
-    
+
     /**
      * If the nonce is valid, then register the user and display a confirmation message.
      *
@@ -871,10 +876,8 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function process_registration_post()
-    {
+    public function process_registration_post() {
         $gt_registration_nonce = ( isset( $_POST['_gt_registration_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['_gt_registration_nonce'] ) ) : '' );
-        
         if ( $gt_registration_nonce && wp_verify_nonce( $gt_registration_nonce, '_gt_registration_nonce_action' ) ) {
             $user_login = ( isset( $_POST['user_login'] ) ? sanitize_user( wp_unslash( $_POST['user_login'] ) ) : '' );
             $user_email = ( isset( $_POST['user_email'] ) ? sanitize_email( wp_unslash( $_POST['user_email'] ) ) : '' );
@@ -882,13 +885,12 @@ class Genealogical_Tree_Public
             if ( $user_id && !is_wp_error( $user_id ) ) {
                 update_option( 'gt_registration_confirmation', true );
             }
-            if ( is_wp_error( $user_id ) && !empty($user_id->errors) ) {
+            if ( is_wp_error( $user_id ) && !empty( $user_id->errors ) ) {
                 update_option( 'gt_registration_validation', $user_id->errors );
             }
         }
-    
     }
-    
+
     /**
      * It checks if the user is logged in, and if not, it displays the registration form.
      *
@@ -896,14 +898,12 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function gt_user_registration_shortcode()
-    {
+    public function gt_user_registration_shortcode() {
         ob_start();
         $errors = get_option( 'gt_registration_validation' );
         $confirmation = get_option( 'gt_registration_confirmation' );
         ?>
 		<?php 
-        
         if ( !is_user_logged_in() ) {
             ?>
 			<div id="register_error">
@@ -911,9 +911,9 @@ class Genealogical_Tree_Public
             foreach ( $errors as $error ) {
                 ?>
 				<?php 
-                echo  wp_kses( current( $error ), array(
+                echo wp_kses( current( $error ), array(
                     'strong' => array(),
-                ) ) ;
+                ) );
                 ?>
 				<br>
 				<?php 
@@ -922,7 +922,6 @@ class Genealogical_Tree_Public
             ?>
 			</div>
 			<?php 
-            
             if ( $confirmation ) {
                 ?>
 				<p id="reg_passmail">
@@ -932,7 +931,6 @@ class Genealogical_Tree_Public
 				</p>
 				<?php 
             }
-            
             update_option( 'gt_registration_confirmation', false );
             ?>
 			<form name="register-form" id="register-form" action="" method="post">
@@ -968,11 +966,9 @@ class Genealogical_Tree_Public
 			</form>
 		<?php 
         }
-        
         ?>
 
 		<?php 
-        
         if ( is_user_logged_in() ) {
             ?>
 			<p> <?php 
@@ -980,12 +976,11 @@ class Genealogical_Tree_Public
             ?> </p>
 		<?php 
         }
-        
         ?>
 		<?php 
         return ob_get_clean();
     }
-    
+
     /**
      * It creates a shortcode that can be used to display a login form on any page.
      *
@@ -993,8 +988,7 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function gt_user_login_shortcode()
-    {
+    public function gt_user_login_shortcode() {
         $host = ( isset( $_SERVER['HTTP_HOST'] ) ? esc_url_raw( wp_unslash( $_SERVER['HTTP_HOST'] ) ) : '' );
         $uri = ( isset( $_SERVER['REQUEST_URI'] ) ? esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '' );
         $args = array(
@@ -1014,37 +1008,35 @@ class Genealogical_Tree_Public
             'value_remember' => false,
         );
         ob_start();
-        
         if ( !is_user_logged_in() ) {
             wp_login_form( $args );
         } else {
             ?>
 			<center>
 				<?php 
-            echo  esc_html__( 'Already logged in.', 'genealogical-tree' ) ;
+            echo esc_html__( 'Already logged in.', 'genealogical-tree' );
             ?>
 				<a href="<?php 
-            echo  esc_attr( admin_url() ) ;
+            echo esc_attr( admin_url() );
             ?>">
 					<?php 
-            echo  esc_html__( 'Dashboard', 'genealogical-tree' ) ;
+            echo esc_html__( 'Dashboard', 'genealogical-tree' );
             ?>
 				</a>
 				|
 				<a href="<?php 
-            echo  esc_attr( wp_logout_url( home_url() ) ) ;
+            echo esc_attr( wp_logout_url( home_url() ) );
             ?>">
 					<?php 
-            echo  esc_html__( 'Logout', 'genealogical-tree' ) ;
+            echo esc_html__( 'Logout', 'genealogical-tree' );
             ?>
 				</a>
 			</center>
 			<?php 
         }
-        
         return ob_get_clean();
     }
-    
+
     /**
      * It adds a link to the lost password page to the login form
      *
@@ -1052,15 +1044,14 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function add_lost_password_link()
-    {
+    public function add_lost_password_link() {
         return '
 		<a href="' . esc_attr( wp_lostpassword_url() ) . '">
 			' . esc_html__( 'Forgot Your Password?', 'genealogical-tree' ) . '
 		</a>
 		';
     }
-    
+
     /**
      * If the query is for an author archive, then change the post type to include both the `gt-member` and
      * `gt-family` post types
@@ -1071,14 +1062,38 @@ class Genealogical_Tree_Public
      *
      * @since    2.1.1
      */
-    public function pre_get_posts( $query )
-    {
+    public function pre_get_posts( $query ) {
         if ( is_admin() || !$query->is_main_query() ) {
             return;
         }
         if ( $query->is_author() ) {
-            $query->set( 'post_type', array( 'gt-member', 'gt-family' ) );
+            $query->set( 'post_type', array('gt-member', 'gt-family') );
         }
+    }
+
+    /**
+     * If the generation number is greater than 5, and the user is not paying or on a trial, then return.
+     * If the generation number is greater than the generation number set in the settings, then return
+     *
+     * @param int|string $gen The current generation number.
+     * @param object     $setting The current setting object.
+     *
+     * @return string Nothing is being returned.
+     *
+     * @since    2.2.0.2
+     */
+    public function check_generation_with_gt_fs( $gen, $setting ) {
+        if ( (int) $gen > 5 ) {
+            if ( gt_fs()->is_not_paying() && !gt_fs()->is_trial() ) {
+                return;
+            }
+        }
+        if ( '-1' !== (string) $setting->generation_number && 0 !== (int) $setting->generation_number ) {
+            if ( (int) $gen > (int) $setting->generation_number ) {
+                return;
+            }
+        }
+        return true;
     }
 
 }

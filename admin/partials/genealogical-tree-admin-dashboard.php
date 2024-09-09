@@ -200,7 +200,7 @@
 	<div class="gt-dashbord">
 		<div class="gt-dashbord--nav">
 			<div>
-				<a class="gt-logo" href="https://www.devs.family/genealogical-tree/">
+				<a class="gt-logo" href="https://zqe.io/genealogical-tree/">
 					<img height="30" src="<?php echo esc_attr( GENEALOGICAL_TREE_DIR_URL ); ?>admin/img/menu-icon.png">
 					<span>Genealogical Tree</span>
 				</a>
@@ -218,7 +218,7 @@
 				</nav>
 			</div>
 			<div>
-				<a class="gt-sign-in-up" href="https://www.devs.family/genealogical-tree/help/forum/">Sign In / Up</a>
+				<a class="gt-sign-in-up" href="https://zqe.io/support-area/">Sign In / Up</a>
 			</div>
 		</div>
 		<div class="gt-dashbord--content">
